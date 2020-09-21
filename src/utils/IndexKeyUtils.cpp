@@ -127,7 +127,7 @@ IndexKeyUtils::collectIndexValues(RowReader* reader,
         if (isNullable && !haveNullCol) {
             haveNullCol = true;
         }
-        colsType.emplace_back(IndexKeyUtils::toValueType(col.get_type()));
+        colsType.emplace_back(IndexKeyUtils::toValueType(col.type.type));
         auto ret = checkValue(v, isNullable);
         if (!ret.ok()) {
             LOG(ERROR) << "prop error by : " << col.get_name()

@@ -16,7 +16,7 @@ bool SchemaUtil::checkType(std::vector<cpp2::ColumnDef> &columns) {
             if (nullable && value->isNull()) {
                 continue;;
             }
-            switch (column.get_type()) {
+            switch (column.get_type().get_type()) {
                 case cpp2::PropertyType::BOOL:
                     if (value->type() != nebula::Value::Type::BOOL) {
                         LOG(ERROR) << "Invalid default value for ` " << name
@@ -97,7 +97,8 @@ bool SchemaUtil::checkType(std::vector<cpp2::ColumnDef> &columns) {
                                    << "', value type is " << value->type();
                         return false;
                     }
-                    size_t typeLen = column.__isset.type_length ? *column.get_type_length() : 0;
+                    size_t typeLen = column.type.__isset.type_length
+                        ? *column.get_type().get_type_length() : 0;
                     if (value->getStr().size() > typeLen) {
                         const auto trimStr = value->getStr().substr(0, typeLen);
                         value->setStr(trimStr);

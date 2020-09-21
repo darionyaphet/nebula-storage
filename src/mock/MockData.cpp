@@ -368,28 +368,34 @@ std::shared_ptr<meta::NebulaSchemaProvider> MockData::mockTeammateEdgeSchema(Sch
     return schema;
 }
 
-std::vector<nebula::meta::cpp2::ColumnDef>
+std::vector<meta::cpp2::ColumnDef>
 MockData::mockGeneralTagIndexColumns() {
-    std::vector<nebula::meta::cpp2::ColumnDef> cols;
+    std::vector<meta::cpp2::ColumnDef> cols;
     meta::cpp2::ColumnDef col;
     col.name = "col_bool";
-    col.type = meta::cpp2::PropertyType::BOOL;
+    meta::cpp2::ColumnTypeDef typeDef;
+    typeDef.type = meta::cpp2::PropertyType::BOOL;
+    col.set_type(std::move(typeDef));
     cols.emplace_back(std::move(col));
 
     col.name = "col_int";
-    col.type = meta::cpp2::PropertyType::INT64;
+    typeDef.type = meta::cpp2::PropertyType::INT64;
+    col.set_type(std::move(typeDef));
     cols.emplace_back(std::move(col));
 
     col.name = "col_float";
-    col.type = meta::cpp2::PropertyType::FLOAT;
+    typeDef.type = meta::cpp2::PropertyType::FLOAT;
+    col.set_type(std::move(typeDef));
     cols.emplace_back(std::move(col));
 
     col.name = "col_double";
-    col.type = meta::cpp2::PropertyType::DOUBLE;
+    typeDef.type = meta::cpp2::PropertyType::DOUBLE;
+    col.set_type(std::move(typeDef));
     cols.emplace_back(std::move(col));
 
     col.name = "col_str";
-    col.type = meta::cpp2::PropertyType::STRING;
+    typeDef.type = meta::cpp2::PropertyType::STRING;
+    col.set_type(std::move(typeDef));
     cols.emplace_back(std::move(col));
     return cols;
 }
@@ -399,15 +405,19 @@ MockData::mockPlayerTagIndexColumns() {
     std::vector<nebula::meta::cpp2::ColumnDef> cols;
     meta::cpp2::ColumnDef col;
     col.name = "name";
-    col.type = meta::cpp2::PropertyType::STRING;
+    meta::cpp2::ColumnTypeDef typeDef;
+    typeDef.type = meta::cpp2::PropertyType::STRING;
+    col.set_type(std::move(typeDef));
     cols.emplace_back(std::move(col));
 
     col.name = "age";
-    col.type = meta::cpp2::PropertyType::INT64;
+    typeDef.type = meta::cpp2::PropertyType::INT64;
+    col.set_type(std::move(typeDef));
     cols.emplace_back(std::move(col));
 
     col.name = "playing";
-    col.type = meta::cpp2::PropertyType::BOOL;
+    typeDef.type = meta::cpp2::PropertyType::BOOL;
+    col.set_type(std::move(typeDef));
     cols.emplace_back(std::move(col));
     return cols;
 }
@@ -417,7 +427,9 @@ MockData::mockTeamTagIndexColumns() {
     std::vector<nebula::meta::cpp2::ColumnDef> cols;
     meta::cpp2::ColumnDef col;
     col.name = "name";
-    col.type = meta::cpp2::PropertyType::STRING;
+    meta::cpp2::ColumnTypeDef typeDef;
+    typeDef.type = meta::cpp2::PropertyType::STRING;
+    col.set_type(std::move(typeDef));
     cols.emplace_back(std::move(col));
     return cols;
 }
@@ -427,7 +439,9 @@ MockData::mockSimpleTagIndexColumns() {
     std::vector<nebula::meta::cpp2::ColumnDef> cols;
     meta::cpp2::ColumnDef col;
     col.name = "col_date";
-    col.type = meta::cpp2::PropertyType::DATE;
+    meta::cpp2::ColumnTypeDef typeDef;
+    typeDef.type = meta::cpp2::PropertyType::DATE;
+    col.set_type(std::move(typeDef));
     cols.emplace_back(std::move(col));
     return cols;
 }
@@ -437,15 +451,19 @@ MockData::mockServeEdgeIndexColumns() {
     std::vector<nebula::meta::cpp2::ColumnDef> cols;
     meta::cpp2::ColumnDef col;
     col.name = "playerName";
-    col.type = meta::cpp2::PropertyType::STRING;
+    meta::cpp2::ColumnTypeDef typeDef;
+    typeDef.type = meta::cpp2::PropertyType::STRING;
+    col.set_type(std::move(typeDef));
     cols.emplace_back(std::move(col));
 
     col.name = "teamName";
-    col.type = meta::cpp2::PropertyType::STRING;
+    typeDef.type = meta::cpp2::PropertyType::STRING;
+    col.set_type(std::move(typeDef));
     cols.emplace_back(std::move(col));
 
     col.name = "startYear";
-    col.type = meta::cpp2::PropertyType::INT64;
+    typeDef.type = meta::cpp2::PropertyType::INT64;
+    col.set_type(std::move(typeDef));
     cols.emplace_back(std::move(col));
     return cols;
 }
@@ -455,15 +473,19 @@ MockData::mockTeammateEdgeIndexColumns() {
     std::vector<nebula::meta::cpp2::ColumnDef> cols;
     meta::cpp2::ColumnDef col;
     col.name = "player1";
-    col.type = meta::cpp2::PropertyType::STRING;
+    meta::cpp2::ColumnTypeDef typeDef;
+    typeDef.type = meta::cpp2::PropertyType::STRING;
+    col.set_type(std::move(typeDef));
     cols.emplace_back(std::move(col));
 
     col.name = "player2";
-    col.type = meta::cpp2::PropertyType::STRING;
+    typeDef.type = meta::cpp2::PropertyType::STRING;
+    col.set_type(std::move(typeDef));
     cols.emplace_back(std::move(col));
 
     col.name = "teamName";
-    col.type = meta::cpp2::PropertyType::STRING;
+    typeDef.type = meta::cpp2::PropertyType::STRING;
+    col.set_type(std::move(typeDef));
     cols.emplace_back(std::move(col));
     return cols;
 }
@@ -520,61 +542,73 @@ MockData::mockTypicaIndexColumns() {
     std::vector<nebula::meta::cpp2::ColumnDef> cols;
     meta::cpp2::ColumnDef col_bool;
     col_bool.name = "col_bool";
-    col_bool.type = meta::cpp2::PropertyType::BOOL;
+    meta::cpp2::ColumnTypeDef typeDef;
+    typeDef.type = meta::cpp2::PropertyType::BOOL;
+    col_bool.set_type(std::move(typeDef));
     cols.emplace_back(std::move(col_bool));
 
     meta::cpp2::ColumnDef col_bool_null;
     col_bool_null.name = "col_bool_null";
-    col_bool_null.type = meta::cpp2::PropertyType::BOOL;
+    typeDef.type = meta::cpp2::PropertyType::BOOL;
+    col_bool_null.set_type(std::move(typeDef));
     col_bool_null.set_nullable(true);
     cols.emplace_back(std::move(col_bool_null));
 
     meta::cpp2::ColumnDef col_bool_default;
     col_bool_default.name = "col_bool_default";
-    col_bool_default.type = meta::cpp2::PropertyType::BOOL;
+    typeDef.type = meta::cpp2::PropertyType::BOOL;
+    col_bool_default.set_type(std::move(typeDef));
     cols.emplace_back(std::move(col_bool_default));
 
     meta::cpp2::ColumnDef col_int;
     col_int.name = "col_int";
-    col_int.type = meta::cpp2::PropertyType::INT64;
+    typeDef.type = meta::cpp2::PropertyType::INT64;
+    col_int.set_type(std::move(typeDef));
     cols.emplace_back(std::move(col_int));
 
     meta::cpp2::ColumnDef col_int_null;
     col_int_null.name = "col_int_null";
-    col_int_null.type = meta::cpp2::PropertyType::INT64;
+    typeDef.type = meta::cpp2::PropertyType::INT64;
+    col_int_null.set_type(std::move(typeDef));
     col_int_null.set_nullable(true);
     cols.emplace_back(std::move(col_int_null));
 
     meta::cpp2::ColumnDef col_float;
     col_float.name = "col_float";
-    col_float.type = meta::cpp2::PropertyType::FLOAT;
+    typeDef.type = meta::cpp2::PropertyType::FLOAT;
+    col_float.set_type(std::move(typeDef));
     cols.emplace_back(std::move(col_float));
 
     meta::cpp2::ColumnDef col_float_null;
     col_float_null.name = "col_float_null";
-    col_float_null.type = meta::cpp2::PropertyType::FLOAT;
+    typeDef.type = meta::cpp2::PropertyType::FLOAT;
+    col_float_null.set_type(std::move(typeDef));
     col_float_null.set_nullable(true);
     cols.emplace_back(std::move(col_float_null));
 
     meta::cpp2::ColumnDef col_str;
     col_str.name = "col_str";
-    col_str.type = meta::cpp2::PropertyType::STRING;
+    typeDef.type = meta::cpp2::PropertyType::STRING;
+    col_str.set_type(std::move(typeDef));
     cols.emplace_back(std::move(col_str));
 
     meta::cpp2::ColumnDef col_str_null;
     col_str_null.name = "col_str_null";
-    col_str_null.type = meta::cpp2::PropertyType::STRING;
+    typeDef.type = meta::cpp2::PropertyType::STRING;
+    col_str_null.set_type(std::move(typeDef));
     col_str_null.set_nullable(true);
     cols.emplace_back(std::move(col_str_null));
 
     meta::cpp2::ColumnDef col_date;
     col_date.name = "col_date";
-    col_date.type = meta::cpp2::PropertyType::DATE;
+    typeDef.type = meta::cpp2::PropertyType::DATE;
+    col_date.set_type(std::move(typeDef));
     cols.emplace_back(std::move(col_date));
 
     meta::cpp2::ColumnDef col_date_null;
     col_date_null.name = "col_date_null";
-    col_date_null.type = meta::cpp2::PropertyType::DATE;
+    typeDef.type = meta::cpp2::PropertyType::DATE;
+    col_date_null.set_type(std::move(typeDef));
     col_date_null.set_nullable(true);
     cols.emplace_back(std::move(col_date_null));
     return cols;

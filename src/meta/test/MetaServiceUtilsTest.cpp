@@ -158,19 +158,25 @@ TEST(MetaServiceUtilsTest, TagTest) {
     for (auto i = 1; i <= 3; i++) {
         cpp2::ColumnDef column;
         column.set_name(folly::stringPrintf("col_%d", i));
-        column.set_type(cpp2::PropertyType::INT64);
+        cpp2::ColumnTypeDef typeDef;
+        typeDef.set_type(cpp2::PropertyType::INT64);
+        column.set_type(std::move(typeDef));
         cols.emplace_back(std::move(column));
     }
     for (auto i = 4; i <= 6; i++) {
         cpp2::ColumnDef column;
         column.set_name(folly::stringPrintf("col_%d", i));
-        column.set_type(cpp2::PropertyType::FLOAT);
+        cpp2::ColumnTypeDef typeDef;
+        typeDef.set_type(cpp2::PropertyType::FLOAT);
+        column.set_type(std::move(typeDef));
         cols.emplace_back(std::move(column));
     }
     for (auto i = 7; i < 10; i++) {
         cpp2::ColumnDef column;
         column.set_name(folly::stringPrintf("col_%d", i));
-        column.set_type(cpp2::PropertyType::STRING);
+        cpp2::ColumnTypeDef typeDef;
+        typeDef.set_type(cpp2::PropertyType::STRING);
+        column.set_type(std::move(typeDef));
         cols.emplace_back(std::move(column));
     }
     schema.set_columns(std::move(cols));

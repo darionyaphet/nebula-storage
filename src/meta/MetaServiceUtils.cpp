@@ -554,8 +554,8 @@ cpp2::ErrorCode MetaServiceUtils::alterSchemaProp(std::vector<cpp2::ColumnDef>& 
         for (auto& col : cols) {
             if (col.get_name() == ttlCol) {
                 // Only integer and timestamp columns can be used as ttl_col
-                if (col.type != cpp2::PropertyType::INT64 &&
-                    col.type != cpp2::PropertyType::TIMESTAMP) {
+                if (col.type.type != cpp2::PropertyType::INT64 &&
+                    col.type.type != cpp2::PropertyType::TIMESTAMP) {
                     LOG(ERROR) << "TTL column type illegal";
                     return cpp2::ErrorCode::E_UNSUPPORTED;
                 }

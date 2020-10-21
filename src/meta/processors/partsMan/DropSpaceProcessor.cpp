@@ -54,8 +54,7 @@ void DropSpaceProcessor::process(const cpp2::DropSpaceReq& req) {
         auto user = MetaServiceUtils::parseRoleUser(roleIter->key());
         VLOG(3) << "Revoke role "
                 << MetaServiceUtils::parseRoleStr(roleIter->val())
-                << " for user "
-                << MetaServiceUtils::parseRoleUser(roleIter->key());
+                << " for user " << user;
         deleteKeys.emplace_back(roleIter->key());
         roleIter->next();
     }

@@ -179,6 +179,18 @@ TEST(MetaServiceUtilsTest, TagTest) {
     ASSERT_EQ(parsedSchema, schema);
 }
 
+TEST(MetaServiceUtilsTest, UserTest) {
+    auto user = MetaServiceUtils::userKey("darion");
+    auto pswd = MetaServiceUtils::userVal("123456");
+    ASSERT_EQ("darion", MetaServiceUtils::parseUser(user));
+    ASSERT_EQ("123456", MetaServiceUtils::parseUserPwd(pswd));
+
+    GraphSpaceID spaceId = 1;
+    auto roleKey = MetaServiceUtils::roleKey(spaceId, "darion");
+    ASSERT_EQ("darion", MetaServiceUtils::parseRoleUser(roleKey));
+    ASSERT_EQ(spaceId, MetaServiceUtils::parseRoleSpace(roleKey));
+}
+
 }  // namespace meta
 }  // namespace nebula
 

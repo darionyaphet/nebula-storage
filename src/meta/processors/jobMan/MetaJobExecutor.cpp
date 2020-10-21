@@ -140,7 +140,11 @@ ExecuteRet MetaJobExecutor::execute() {
     std::vector<folly::SemiFuture<Status>> futures;
     auto addresses = nebula::value(addressesRet);
     for (auto& address : addresses) {
-        auto future = executeInternal(std::move(address.first), std::move(address.second));
+        // transform to the admin host
+        auto storageHost = address.first;
+
+        auto future = executeInternal(HostAddr(storageHost.host, storageHost.port - 1),
+                                      std::move(address.second));
         futures.emplace_back(std::move(future));
     }
 

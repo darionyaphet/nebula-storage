@@ -289,7 +289,7 @@ private:
 class IndexIterator : public StorageIterator {
 public:
     explicit IndexIterator(std::unique_ptr<kvstore::KVIterator> iter)
-    : iter_(std::move(iter)) {}
+        : iter_(std::move(iter)) {}
 
     virtual IndexID indexId() const = 0;
 

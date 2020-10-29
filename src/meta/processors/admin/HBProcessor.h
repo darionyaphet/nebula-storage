@@ -27,9 +27,9 @@ public:
     void process(const cpp2::HBReq& req);
 
 private:
-    explicit HBProcessor(kvstore::KVStore* kvstore, ClusterID clusterId = 0,
-                         stats::Stats* stats = nullptr)
-            : BaseProcessor<cpp2::HBResp>(kvstore, stats), clusterId_(clusterId) {}
+    HBProcessor(kvstore::KVStore* kvstore, ClusterID clusterId = 0,
+                stats::Stats* stats = nullptr)
+        : BaseProcessor<cpp2::HBResp>(kvstore, stats), clusterId_(clusterId) {}
 
     ClusterID clusterId_{0};
 };

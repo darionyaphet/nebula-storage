@@ -36,7 +36,7 @@ public:
 
 private:
     explicit RemoveListenerProcessor(kvstore::KVStore* kvstore)
-            : BaseProcessor<cpp2::ExecResp>(kvstore) {}
+        : BaseProcessor<cpp2::ExecResp>(kvstore) {}
 };
 
 class ListListenerProcessor : public BaseProcessor<cpp2::ListListenerResp> {
@@ -49,7 +49,7 @@ public:
 
 private:
     explicit ListListenerProcessor(kvstore::KVStore* kvstore)
-            : BaseProcessor<cpp2::ListListenerResp>(kvstore) {}
+        : BaseProcessor<cpp2::ListListenerResp>(kvstore) {}
 };
 
 }  // namespace meta

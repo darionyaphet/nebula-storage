@@ -31,7 +31,7 @@ protected:
 
 private:
     explicit CreateSpaceProcessor(kvstore::KVStore* kvstore)
-            : BaseProcessor<cpp2::ExecResp>(kvstore) {}
+        : BaseProcessor<cpp2::ExecResp>(kvstore) {}
 };
 
 }  // namespace meta

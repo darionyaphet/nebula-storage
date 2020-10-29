@@ -22,7 +22,7 @@ public:
     void process(const cpp2::KVGetRequest& req);
 
 protected:
-    explicit GetProcessor(StorageEnv* env, stats::Stats* stats):
+    GetProcessor(StorageEnv* env, stats::Stats* stats):
         BaseProcessor<cpp2::KVGetResponse>(env, stats) {}
 };
 

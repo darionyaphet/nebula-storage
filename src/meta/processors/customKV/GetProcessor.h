@@ -22,7 +22,7 @@ public:
 
 private:
     explicit GetProcessor(kvstore::KVStore* kvstore)
-            : BaseProcessor<cpp2::GetResp>(kvstore) {}
+        : BaseProcessor<cpp2::GetResp>(kvstore) {}
 };
 
 }  // namespace meta

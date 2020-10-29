@@ -18,9 +18,9 @@ class GetTagPropNode : public QueryNode<VertexID> {
 public:
     using RelNode<VertexID>::execute;
 
-    explicit GetTagPropNode(PlanContext *planCtx,
-                            std::vector<TagNode*> tagNodes,
-                            nebula::DataSet* resultDataSet)
+    GetTagPropNode(PlanContext *planCtx,
+                   std::vector<TagNode*> tagNodes,
+                   nebula::DataSet* resultDataSet)
         : planContext_(planCtx),
           tagNodes_(std::move(tagNodes)),
           resultDataSet_(resultDataSet) {}

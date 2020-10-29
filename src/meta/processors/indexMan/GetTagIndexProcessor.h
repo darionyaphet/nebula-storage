@@ -22,7 +22,7 @@ public:
 
 private:
     explicit GetTagIndexProcessor(kvstore::KVStore* kvstore)
-            : BaseProcessor<cpp2::GetTagIndexResp>(kvstore) {}
+        : BaseProcessor<cpp2::GetTagIndexResp>(kvstore) {}
 };
 
 }  // namespace meta

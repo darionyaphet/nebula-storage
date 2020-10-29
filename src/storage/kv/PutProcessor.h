@@ -22,8 +22,8 @@ public:
     void process(const cpp2::KVPutRequest& req);
 
 private:
-    explicit PutProcessor(StorageEnv* env, stats::Stats* stats)
-            : BaseProcessor<cpp2::ExecResponse>(env, stats) {}
+    PutProcessor(StorageEnv* env, stats::Stats* stats)
+        : BaseProcessor<cpp2::ExecResponse>(env, stats) {}
 };
 
 }  // namespace storage

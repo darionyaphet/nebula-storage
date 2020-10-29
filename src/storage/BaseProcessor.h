@@ -27,10 +27,10 @@ using PartCode = std::pair<PartitionID, kvstore::ResultCode>;
 template<typename RESP>
 class BaseProcessor {
 public:
-    explicit BaseProcessor(StorageEnv* env,
-                           stats::Stats* stats = nullptr)
-            : env_(env)
-            , stats_(stats) {}
+    BaseProcessor(StorageEnv* env,
+                  stats::Stats* stats = nullptr)
+        : env_(env)
+        , stats_(stats) {}
 
     virtual ~BaseProcessor() = default;
 

@@ -131,9 +131,9 @@ public:
     virtual void process(const REQ& req) = 0;
 
 protected:
-    explicit QueryBaseProcessor(StorageEnv* env,
-                                stats::Stats* stats = nullptr,
-                                VertexCache* cache = nullptr)
+    QueryBaseProcessor(StorageEnv* env,
+                       stats::Stats* stats = nullptr,
+                       VertexCache* cache = nullptr)
         : BaseProcessor<RESP>(env, stats) {
         this->tagContext_.vertexCache_ = cache;
     }

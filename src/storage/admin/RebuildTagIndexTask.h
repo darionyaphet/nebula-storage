@@ -15,8 +15,8 @@ namespace storage {
 
 class RebuildTagIndexTask : public RebuildIndexTask {
 public:
-    explicit RebuildTagIndexTask(StorageEnv* env,
-                                 TaskContext&& ctx)
+    RebuildTagIndexTask(StorageEnv* env,
+                        TaskContext&& ctx)
         : RebuildIndexTask(env, std::move(ctx)) {}
 
 private:

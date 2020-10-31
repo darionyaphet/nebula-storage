@@ -23,7 +23,7 @@ public:
 
 private:
     explicit ListPartsProcessor(kvstore::KVStore* kvstore)
-            : BaseProcessor<cpp2::ListPartsResp>(kvstore) {}
+        : BaseProcessor<cpp2::ListPartsResp>(kvstore) {}
 
 
     // Get parts alloc information

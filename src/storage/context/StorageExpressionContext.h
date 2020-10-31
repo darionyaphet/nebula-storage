@@ -28,11 +28,11 @@ If we need to read value from a user defined plase, just set the related value b
 */
 class StorageExpressionContext final : public ExpressionContext {
 public:
-    explicit StorageExpressionContext(size_t vIdLen,
-                                      bool isIntId,
-                                      const std::string& name = "",
-                                      const meta::NebulaSchemaProvider* schema = nullptr,
-                                      bool isEdge = false)
+    StorageExpressionContext(size_t vIdLen,
+                             bool isIntId,
+                             const std::string& name = "",
+                             const meta::NebulaSchemaProvider* schema = nullptr,
+                             bool isEdge = false)
         : vIdLen_(vIdLen)
         , isIntId_(isIntId)
         , name_(name)

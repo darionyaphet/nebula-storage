@@ -23,10 +23,9 @@ public:
     void process(const cpp2::AdminJobReq& req);
 
 protected:
-    explicit AdminJobProcessor(kvstore::KVStore* kvstore,
-                               AdminClient* adminClient)
-            : BaseProcessor<cpp2::AdminJobResp>(kvstore)
-            , adminClient_(adminClient) {}
+    AdminJobProcessor(kvstore::KVStore* kvstore, AdminClient* adminClient)
+        : BaseProcessor<cpp2::AdminJobResp>(kvstore)
+        , adminClient_(adminClient) {}
 
 protected:
     AdminClient* adminClient_{nullptr};

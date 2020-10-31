@@ -22,7 +22,7 @@ public:
 
 private:
     explicit ListHostsProcessor(kvstore::KVStore* kvstore)
-            : BaseProcessor<cpp2::ListHostsResp>(kvstore) {}
+        : BaseProcessor<cpp2::ListHostsResp>(kvstore) {}
 
     /**
      *  return online/offline, gitInfoSHA for the specific HostRole

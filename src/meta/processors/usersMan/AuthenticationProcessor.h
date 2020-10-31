@@ -22,7 +22,7 @@ public:
 
 private:
     explicit CreateUserProcessor(kvstore::KVStore* kvstore)
-            : BaseProcessor<cpp2::ExecResp>(kvstore) {}
+        : BaseProcessor<cpp2::ExecResp>(kvstore) {}
 };
 
 
@@ -36,7 +36,7 @@ public:
 
 private:
     explicit AlterUserProcessor(kvstore::KVStore* kvstore)
-            : BaseProcessor<cpp2::ExecResp>(kvstore) {}
+        : BaseProcessor<cpp2::ExecResp>(kvstore) {}
 };
 
 
@@ -50,7 +50,7 @@ public:
 
 private:
     explicit DropUserProcessor(kvstore::KVStore* kvstore)
-            : BaseProcessor<cpp2::ExecResp>(kvstore) {}
+        : BaseProcessor<cpp2::ExecResp>(kvstore) {}
 };
 
 
@@ -64,7 +64,7 @@ public:
 
 private:
     explicit GrantProcessor(kvstore::KVStore* kvstore)
-            : BaseProcessor<cpp2::ExecResp>(kvstore) {}
+        : BaseProcessor<cpp2::ExecResp>(kvstore) {}
 };
 
 
@@ -78,7 +78,7 @@ public:
 
 private:
     explicit RevokeProcessor(kvstore::KVStore* kvstore)
-            : BaseProcessor<cpp2::ExecResp>(kvstore) {}
+        : BaseProcessor<cpp2::ExecResp>(kvstore) {}
 };
 
 
@@ -92,7 +92,7 @@ public:
 
 private:
     explicit ChangePasswordProcessor(kvstore::KVStore* kvstore)
-            : BaseProcessor<cpp2::ExecResp>(kvstore) {}
+        : BaseProcessor<cpp2::ExecResp>(kvstore) {}
 };
 
 class ListUsersProcessor : public BaseProcessor<cpp2::ListUsersResp> {
@@ -105,7 +105,7 @@ public:
 
 private:
     explicit ListUsersProcessor(kvstore::KVStore* kvstore)
-            : BaseProcessor<cpp2::ListUsersResp>(kvstore) {}
+        : BaseProcessor<cpp2::ListUsersResp>(kvstore) {}
 };
 
 
@@ -119,7 +119,7 @@ public:
 
 private:
     explicit ListRolesProcessor(kvstore::KVStore* kvstore)
-            : BaseProcessor<cpp2::ListRolesResp>(kvstore) {}
+        : BaseProcessor<cpp2::ListRolesResp>(kvstore) {}
 };
 
 class GetUserRolesProcessor : public BaseProcessor<cpp2::ListRolesResp> {

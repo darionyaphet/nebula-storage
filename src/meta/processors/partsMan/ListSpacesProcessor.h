@@ -22,7 +22,7 @@ public:
 
 private:
     explicit ListSpacesProcessor(kvstore::KVStore* kvstore)
-            : BaseProcessor<cpp2::ListSpacesResp>(kvstore) {}
+        : BaseProcessor<cpp2::ListSpacesResp>(kvstore) {}
 };
 
 }  // namespace meta

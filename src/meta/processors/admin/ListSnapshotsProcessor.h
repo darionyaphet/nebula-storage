@@ -21,7 +21,7 @@ public:
 
 private:
     explicit ListSnapshotsProcessor(kvstore::KVStore* kvstore)
-            : BaseProcessor<cpp2::ListSnapshotsResp>(kvstore) {}
+        : BaseProcessor<cpp2::ListSnapshotsResp>(kvstore) {}
 };
 }  // namespace meta
 }  // namespace nebula

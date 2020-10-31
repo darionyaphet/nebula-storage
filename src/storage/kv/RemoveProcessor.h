@@ -22,8 +22,8 @@ public:
     void process(const cpp2::KVRemoveRequest& req);
 
 private:
-    explicit RemoveProcessor(StorageEnv* env, stats::Stats* stats)
-            : BaseProcessor<cpp2::ExecResponse>(env, stats) {}
+    RemoveProcessor(StorageEnv* env, stats::Stats* stats)
+        : BaseProcessor<cpp2::ExecResponse>(env, stats) {}
 };
 
 }  // namespace storage

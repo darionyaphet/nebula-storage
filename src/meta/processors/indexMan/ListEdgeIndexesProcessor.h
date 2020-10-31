@@ -22,7 +22,7 @@ public:
 
 private:
     explicit ListEdgeIndexesProcessor(kvstore::KVStore* kvstore)
-            : BaseProcessor<cpp2::ListEdgeIndexesResp>(kvstore) {}
+        : BaseProcessor<cpp2::ListEdgeIndexesResp>(kvstore) {}
 };
 
 }  // namespace meta

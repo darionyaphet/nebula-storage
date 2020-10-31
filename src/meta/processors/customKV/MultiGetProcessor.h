@@ -22,7 +22,7 @@ public:
 
 private:
     explicit MultiGetProcessor(kvstore::KVStore* kvstore)
-            : BaseProcessor<cpp2::MultiGetResp>(kvstore) {}
+        : BaseProcessor<cpp2::MultiGetResp>(kvstore) {}
 };
 
 }  // namespace meta

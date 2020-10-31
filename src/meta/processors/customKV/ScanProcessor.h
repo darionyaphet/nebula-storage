@@ -22,7 +22,7 @@ public:
 
 private:
     explicit ScanProcessor(kvstore::KVStore* kvstore)
-            : BaseProcessor<cpp2::ScanResp>(kvstore) {}
+        : BaseProcessor<cpp2::ScanResp>(kvstore) {}
 };
 
 }  // namespace meta

@@ -22,7 +22,7 @@ public:
 
 private:
     explicit GetPartsAllocProcessor(kvstore::KVStore* kvstore)
-            : BaseProcessor<cpp2::GetPartsAllocResp>(kvstore) {}
+        : BaseProcessor<cpp2::GetPartsAllocResp>(kvstore) {}
 };
 
 }  // namespace meta

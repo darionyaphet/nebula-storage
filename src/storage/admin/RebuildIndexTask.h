@@ -19,7 +19,7 @@ using IndexItems = std::vector<std::shared_ptr<meta::cpp2::IndexItem>>;
 
 class RebuildIndexTask : public AdminTask {
 public:
-    explicit RebuildIndexTask(StorageEnv* env, TaskContext&& ctx)
+    RebuildIndexTask(StorageEnv* env, TaskContext&& ctx)
         : AdminTask(env, std::move(ctx)) {}
 
     ~RebuildIndexTask() {

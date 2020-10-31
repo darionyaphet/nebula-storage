@@ -51,7 +51,7 @@ template<typename RESP>
 class BaseProcessor {
 public:
     explicit BaseProcessor(kvstore::KVStore* kvstore, stats::Stats* stats = nullptr)
-            : kvstore_(kvstore), stats_(stats) {}
+        : kvstore_(kvstore), stats_(stats) {}
 
     virtual ~BaseProcessor() = default;
 

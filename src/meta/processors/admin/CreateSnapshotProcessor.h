@@ -25,9 +25,8 @@ public:
     cpp2::ErrorCode cancelWriteBlocking();
 
 private:
-    explicit CreateSnapshotProcessor(kvstore::KVStore* kvstore,
-                                     AdminClient* client)
-            : BaseProcessor<cpp2::ExecResp>(kvstore), client_(client) {}
+    CreateSnapshotProcessor(kvstore::KVStore* kvstore, AdminClient* client)
+        : BaseProcessor<cpp2::ExecResp>(kvstore), client_(client) {}
 
     std::string genSnapshotName();
 

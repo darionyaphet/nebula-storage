@@ -378,8 +378,7 @@ private:
         input.emplace_back(std::move(row));
         auto vProps = vertexProps();
         auto start = time::WallClock::fastNowInMicroSec();
-        auto f = graphStorageClient_->getProps(spaceId_, std::move(input), &vProps,
-                                               nullptr, nullptr)
+        auto f = graphStorageClient_->getVertexProps(spaceId_, std::move(input), &vProps)
             .via(evb)
             .thenValue([this, start](auto&& resps) {
                 if (!resps.succeeded()) {
@@ -405,8 +404,7 @@ private:
         input.emplace_back(std::move(row));
         auto eProps = edgeProps();
         auto start = time::WallClock::fastNowInMicroSec();
-        auto f = graphStorageClient_->getProps(spaceId_, std::move(input), nullptr,
-                                               &eProps, nullptr)
+        auto f = graphStorageClient_->getEdgeProps(spaceId_, std::move(input), &eProps)
             .via(evb)
             .thenValue([this, start](auto&& resps) {
                 if (!resps.succeeded()) {

@@ -224,7 +224,7 @@ private:
             tagProp.tag = tagId_;
             tagProp.props.emplace_back(propName_);
             DataSet dataset({kVid});
-            auto future = client_->getProps(spaceId_, dataset, &props, nullptr, nullptr);
+            auto future = client_->getVertexProps(spaceId_, dataset, &props, nullptr);
             auto resp = std::move(future).get();
             if (!resp.succeeded()) {
                 LOG(ERROR) << "Failed to fetch props of vertex " << nextId;

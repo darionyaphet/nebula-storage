@@ -374,11 +374,9 @@ struct TossEnvironment {
         oneProp.type = edge.key.edge_type;
         props.emplace_back(oneProp);
 
-        auto frpc = sClient_->getProps(spaceId_,
-                                       std::move(ds), /*DataSet*/
-                                       nullptr, /*vector<cpp2::VertexProp>*/
-                                       &props, /*vector<cpp2::EdgeProp>*/
-                                       nullptr /*expressions*/).via(executor_.get());
+        auto frpc = sClient_->getEdgeProps(spaceId_,
+                                           std::move(ds),
+                                           &props).via(executor_.get());
         frpc.wait();
         if (!frpc.valid()) {
             LOG(FATAL) << "getProps rpc invalid()";

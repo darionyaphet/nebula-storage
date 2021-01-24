@@ -17,7 +17,6 @@
 #include <folly/futures/Future.h>
 #include <folly/SharedMutex.h>
 #include "kvstore/KVStore.h"
-#include "meta/MetaServiceUtils.h"
 #include "meta/common/MetaCommon.h"
 #include "meta/processors/Common.h"
 #include "meta/ActiveHostsMan.h"

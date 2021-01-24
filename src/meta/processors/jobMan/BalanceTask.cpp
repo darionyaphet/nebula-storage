@@ -1,18 +1,17 @@
-/* Copyright (c) 2019 vesoft inc. All rights reserved.
+/* Copyright (c) 2021 vesoft inc. All rights reserved.
  *
  * This source code is licensed under Apache 2.0 License,
  * attached with Common Clause Condition 1.0, found in the LICENSES directory.
  */
 
-#include "meta/processors/admin/BalanceTask.h"
-#include <folly/synchronization/Baton.h>
-#include "meta/processors/Common.h"
+#include "meta/ActiveHostsMan.h"
+#include "meta/processors/jobMan/BalanceTask.h"
 
 namespace nebula {
 namespace meta {
 
 #define SAVE_STATE() \
-    if (!saveInStore()) { \
+    if (!saveTaskStatus()) { \
         ret_ = BalanceTaskResult::FAILED; \
         onError_(); \
         return; \
@@ -23,7 +22,7 @@ void BalanceTask::invoke() {
     CHECK_NOTNULL(client_);
     if (ret_ == BalanceTaskResult::INVALID) {
         endTimeMs_ = time::WallClock::fastNowInMilliSec();
-        saveInStore();
+        saveTaskStatus();
         LOG(ERROR) << taskIdStr_ << " Task invalid, status " << static_cast<int32_t>(status_);
         // When a plan is stopped or dst is not alive any more, a task will be marked as INVALID,
         // the task will not be executed again. Balancer will start a new plan instead.
@@ -31,7 +30,7 @@ void BalanceTask::invoke() {
         return;
     } else if (ret_ == BalanceTaskResult::FAILED) {
         endTimeMs_ = time::WallClock::fastNowInMilliSec();
-        saveInStore();
+        saveTaskStatus();
         LOG(ERROR) << taskIdStr_ << " Task failed, status " << static_cast<int32_t>(status_);
         onError_();
         return;
@@ -145,8 +144,7 @@ void BalanceTask::invoke() {
             LOG(INFO) << taskIdStr_ << " Send member change request to the leader"
                       << ", it will remove the old member on src host";
             SAVE_STATE();
-            client_->memberChange(spaceId_, partId_, src_, false).thenValue(
-                    [this] (auto&& resp) {
+            client_->memberChange(spaceId_, partId_, src_, false).thenValue([this] (auto&& resp) {
                 if (!resp.ok()) {
                     LOG(ERROR) << taskIdStr_ << " Remove peer failed, status " << resp;
                     ret_ = BalanceTaskResult::FAILED;
@@ -160,8 +158,7 @@ void BalanceTask::invoke() {
         case BalanceTaskStatus::UPDATE_PART_META: {
             LOG(INFO) << taskIdStr_ << " Update meta for part.";
             SAVE_STATE();
-            client_->updateMeta(spaceId_, partId_, src_, dst_).thenValue(
-                        [this] (auto&& resp) {
+            client_->updateMeta(spaceId_, partId_, src_, dst_).thenValue([this] (auto&& resp) {
                 // The callback will be called inside raft set value. So don't call invoke directly
                 // here.
                 if (!resp.ok()) {
@@ -222,18 +219,10 @@ void BalanceTask::invoke() {
     return;
 }
 
-void BalanceTask::rollback() {
-    if (status_ < BalanceTaskStatus::UPDATE_PART_META) {
-        // TODO(heng): restart the part on its peers.
-    } else {
-        // TODO(heng): Go on the task.
-    }
-}
-
-bool BalanceTask::saveInStore() {
+bool BalanceTask::saveTaskStatus() {
     CHECK_NOTNULL(kv_);
     std::vector<kvstore::KV> data;
-    data.emplace_back(MetaServiceUtils::balanceTaskKey(balanceId_, spaceId_,
+    data.emplace_back(MetaServiceUtils::balanceTaskKey(id_, spaceId_,
                                                        partId_, src_, dst_),
                       MetaServiceUtils::balanceTaskVal(status_, ret_,
                                                        startTimeMs_,
@@ -256,4 +245,3 @@ bool BalanceTask::saveInStore() {
 
 }  // namespace meta
 }  // namespace nebula
-

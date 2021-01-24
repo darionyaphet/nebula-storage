@@ -1,39 +1,36 @@
-/* Copyright (c) 2019 vesoft inc. All rights reserved.
+/* Copyright (c) 2021 vesoft inc. All rights reserved.
  *
  * This source code is licensed under Apache 2.0 License,
  * attached with Common Clause Condition 1.0, found in the LICENSES directory.
  */
 
-#ifndef META_ADMIN_BALANCEPLAN_H_
-#define META_ADMIN_BALANCEPLAN_H_
+#ifndef META_JOB_BALANCEPLAN_H_
+#define META_JOB_BALANCEPLAN_H_
 
-#include <gtest/gtest_prod.h>
 #include "kvstore/KVStore.h"
-#include "meta/processors/admin/BalanceTask.h"
 #include "meta/processors/Common.h"
+#include "meta/processors/jobMan/BalanceTask.h"
+
 namespace nebula {
 namespace meta {
+
 class BalancePlan {
-    friend class Balancer;
-    FRIEND_TEST(BalanceTest, BalancePlanTest);
-    FRIEND_TEST(BalanceTest, NormalTest);
-    FRIEND_TEST(BalanceTest, SpecifyHostTest);
-    FRIEND_TEST(BalanceTest, SpecifyMultiHostTest);
-    FRIEND_TEST(BalanceTest, MockReplaceMachineTest);
-    FRIEND_TEST(BalanceTest, SingleReplicaTest);
-    FRIEND_TEST(BalanceTest, TryToRecoveryTest);
-    FRIEND_TEST(BalanceTest, RecoveryTest);
-    FRIEND_TEST(BalanceTest, DispatchTasksTest);
-    FRIEND_TEST(BalanceTest, StopPlanTest);
+    friend class BalanceJobExecutor;
+    FRIEND_TEST(BalanceDataTest, BalanceTaskTest);
+    FRIEND_TEST(BalanceDataTest, DispatchTasksTest);
+    FRIEND_TEST(BalanceDataTest, BalancePlanTest);
+    FRIEND_TEST(GetBalancePlanTest, BalancePlanJob);
 
 public:
-    BalancePlan(BalanceID id, kvstore::KVStore* kv, AdminClient* client)
+    BalancePlan(JobID id, GraphSpaceID space, kvstore::KVStore* kv, AdminClient* client)
         : id_(id)
+        , space_(space)
         , kv_(kv)
         , client_(client) {}
 
     BalancePlan(const BalancePlan& plan)
         : id_(plan.id_)
+        , space_(plan.space_)
         , kv_(plan.kv_)
         , client_(plan.client_)
         , tasks_(plan.tasks_)
@@ -46,21 +43,13 @@ public:
 
     void invoke();
 
-    /**
-     * TODO(heng): How to rollback if the some tasks failed.
-     * For the tasks before UPDATE_META, they will go back to the original state before balance.
-     * For the tasks after UPDATE_META, they will go on until succeeded.
-     * NOTES: update_meta should be an atomic operation. There is no middle state inside.
-     * */
-    void rollback() {}
-
-    BalanceStatus status() {
+    cpp2::JobStatus status() {
         return status_;
     }
 
-    cpp2::ErrorCode saveInStore(bool onlyPlan = false);
+    cpp2::ErrorCode saveJobStatus();
 
-    BalanceID id() const {
+    JobID id() const {
         return id_;
     }
 
@@ -83,14 +72,15 @@ private:
     void dispatchTasks();
 
 private:
-    BalanceID id_ = 0;
+    JobID id_ = 0;
+    GraphSpaceID space_ = 0;
     kvstore::KVStore* kv_ = nullptr;
     AdminClient* client_ = nullptr;
     std::vector<BalanceTask> tasks_;
     std::mutex lock_;
     size_t finishedTaskNum_ = 0;
     std::function<void()> onFinished_;
-    BalanceStatus status_ = BalanceStatus::NOT_START;
+    cpp2::JobStatus status_ = cpp2::JobStatus::QUEUE;
     bool stopped_ = false;
 
     // List of task index in tasks_;
@@ -101,4 +91,4 @@ private:
 }  // namespace meta
 }  // namespace nebula
 
-#endif  // META_ADMIN_BALANCEPLAN_H_
+#endif  // META_JOB_BALANCEPLAN_H_

@@ -1,45 +1,35 @@
-/* Copyright (c) 2019 vesoft inc. All rights reserved.
+/* Copyright (c) 2021 vesoft inc. All rights reserved.
  *
  * This source code is licensed under Apache 2.0 License,
  * attached with Common Clause Condition 1.0, found in the LICENSES directory.
  */
 
-#ifndef META_ADMIN_BALANCETASK_H_
-#define META_ADMIN_BALANCETASK_H_
+#ifndef META_JOB_BALANCETASK_H_
+#define META_JOB_BALANCETASK_H_
 
-#include <gtest/gtest_prod.h>
-#include "meta/ActiveHostsMan.h"
-#include "common/time/WallClock.h"
-#include "common/network/NetworkUtils.h"
-#include "kvstore/KVStore.h"
-#include "meta/processors/admin/AdminClient.h"
 #include "meta/processors/Common.h"
+#include "meta/processors/admin/AdminClient.h"
+
 namespace nebula {
 namespace meta {
+
 class BalanceTask {
     friend class BalancePlan;
-    FRIEND_TEST(BalanceTest, BalanceTaskTest);
-    FRIEND_TEST(BalanceTest, BalancePlanTest);
-    FRIEND_TEST(BalanceTest, SpecifyHostTest);
-    FRIEND_TEST(BalanceTest, SpecifyMultiHostTest);
-    FRIEND_TEST(BalanceTest, MockReplaceMachineTest);
-    FRIEND_TEST(BalanceTest, SingleReplicaTest);
-    FRIEND_TEST(BalanceTest, NormalTest);
-    FRIEND_TEST(BalanceTest, TryToRecoveryTest);
-    FRIEND_TEST(BalanceTest, RecoveryTest);
-    FRIEND_TEST(BalanceTest, StopPlanTest);
+    FRIEND_TEST(BalanceDataTest, BalanceTaskTest);
+    FRIEND_TEST(BalanceDataTest, DispatchTasksTest);
+    FRIEND_TEST(BalanceDataTest, BalancePlanTest);
 
 public:
     BalanceTask() = default;
 
-    BalanceTask(BalanceID balanceId,
+    BalanceTask(JobID id,
                 GraphSpaceID spaceId,
                 PartitionID partId,
                 const HostAddr& src,
                 const HostAddr& dst,
                 kvstore::KVStore* kv,
                 AdminClient* client)
-        : balanceId_(balanceId)
+        : id_(id)
         , spaceId_(spaceId)
         , partId_(partId)
         , src_(src)
@@ -54,16 +44,14 @@ public:
 
     void invoke();
 
-    void rollback();
-
     BalanceTaskResult result() const {
         return ret_;
     }
 
 private:
     std::string buildTaskId() {
-        return folly::stringPrintf("[%ld, %d:%d, %s:%d->%s:%d]",
-                                   balanceId_,
+        return folly::stringPrintf("[%d, %d:%d, %s:%d->%s:%d]",
+                                   id_,
                                    spaceId_,
                                    partId_,
                                    src_.host.c_str(),
@@ -72,10 +60,10 @@ private:
                                    dst_.port);
     }
 
-    bool saveInStore();
+    bool saveTaskStatus();
 
-private:
-    BalanceID    balanceId_;
+public:
+    JobID        id_;
     GraphSpaceID spaceId_;
     PartitionID  partId_;
     HostAddr     src_;
@@ -94,4 +82,4 @@ private:
 }  // namespace meta
 }  // namespace nebula
 
-#endif  // META_ADMIN_BALANCETASK_H_
+#endif  // META_JOB_BALANCETASK_H_

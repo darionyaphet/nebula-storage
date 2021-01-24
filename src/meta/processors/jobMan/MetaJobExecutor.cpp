@@ -18,6 +18,7 @@
 #include "meta/processors/jobMan/RebuildTagJobExecutor.h"
 #include "meta/processors/jobMan/RebuildEdgeJobExecutor.h"
 #include "meta/processors/jobMan/StatisJobExecutor.h"
+#include "meta/processors/jobMan/BalanceJobExecutor.h"
 #include "meta/processors/jobMan/TaskDescription.h"
 #include "utils/Utils.h"
 
@@ -62,7 +63,14 @@ MetaJobExecutorFactory::createMetaJobExecutor(const JobDescription& jd,
                                         client,
                                         jd.getParas()));
         break;
+    case cpp2::AdminCmd::DATA_BALANCE:
+        ret.reset(new BalanceJobExecutor(jd.getJobId(),
+                                         store,
+                                         client,
+                                         jd.getParas()));
+        break;
     default:
+        LOG(ERROR) << "Command " << static_cast<int>(jd.getCmd()) << " not implement";
         break;
     }
     return ret;
@@ -189,6 +197,21 @@ cpp2::ErrorCode MetaJobExecutor::execute() {
         })
         .wait();
 
+    return rc;
+}
+
+kvstore::ResultCode
+MetaJobExecutor::saveAdditionalData(const std::string& key,
+                                    const std::string& val) {
+    std::vector<kvstore::KV> data{std::make_pair(key, val)};
+    folly::Baton<true, std::atomic> baton;
+    auto rc = nebula::kvstore::ResultCode::SUCCEEDED;
+    kvstore_->asyncMultiPut(kDefaultSpaceId, kDefaultPartId, std::move(data),
+                            [&] (nebula::kvstore::ResultCode code) {
+                                rc = code;
+                                baton.post();
+                            });
+    baton.wait();
     return rc;
 }
 

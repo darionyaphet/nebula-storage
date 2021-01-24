@@ -40,7 +40,6 @@
 #include "meta/processors/customKV/RemoveRangeProcessor.h"
 #include "meta/processors/admin/HBProcessor.h"
 #include "meta/processors/usersMan/AuthenticationProcessor.h"
-#include "meta/processors/admin/BalanceProcessor.h"
 #include "meta/processors/admin/LeaderBalanceProcessor.h"
 #include "meta/processors/admin/CreateSnapshotProcessor.h"
 #include "meta/processors/admin/DropSnapshotProcessor.h"
@@ -53,6 +52,7 @@
 #include "meta/processors/jobMan/ReportTaskProcessor.h"
 #include "meta/processors/admin/CreateBackupProcessor.h"
 #include "meta/processors/jobMan/GetStatisProcessor.h"
+#include "meta/processors/jobMan/GetBalancePlanProcessor.h"
 #include "meta/processors/jobMan/ListTagIndexStatusProcessor.h"
 #include "meta/processors/jobMan/ListEdgeIndexStatusProcessor.h"
 #include "meta/processors/zoneMan/AddZoneProcessor.h"
@@ -364,12 +364,6 @@ MetaServiceHandler::future_getUserRoles(const cpp2::GetUserRolesReq& req) {
     RETURN_FUTURE(processor);
 }
 
-folly::Future<cpp2::BalanceResp>
-MetaServiceHandler::future_balance(const cpp2::BalanceReq& req) {
-    auto* processor = BalanceProcessor::instance(kvstore_);
-    RETURN_FUTURE(processor);
-}
-
 folly::Future<cpp2::ExecResp>
 MetaServiceHandler::future_leaderBalance(const cpp2::LeaderBalanceReq& req) {
     auto* processor = LeaderBalanceProcessor::instance(kvstore_);
@@ -523,6 +517,12 @@ MetaServiceHandler::future_restoreMeta(const cpp2::RestoreMetaReq& req) {
 folly::Future<cpp2::GetStatisResp>
 MetaServiceHandler::future_getStatis(const cpp2::GetStatisReq &req) {
     auto* processor = GetStatisProcessor::instance(kvstore_);
+    RETURN_FUTURE(processor);
+}
+
+folly::Future<cpp2::GetBalancePlanResp>
+MetaServiceHandler::future_getBalancePlan(const cpp2::GetBalancePlanReq &req) {
+    auto* processor = GetBalancePlanProcessor::instance(kvstore_);
     RETURN_FUTURE(processor);
 }
 

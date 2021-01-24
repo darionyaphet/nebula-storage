@@ -19,7 +19,7 @@ void GetSpaceProcessor::process(const cpp2::GetSpaceReq& req) {
     }
 
     auto spaceId = spaceRet.value();
-    std::string spaceKey = MetaServiceUtils::spaceKey(spaceId);
+    auto spaceKey = MetaServiceUtils::spaceKey(spaceId);
     auto ret = doGet(spaceKey);
     if (!ret.ok()) {
         LOG(ERROR) << "Get Space SpaceName: " << req.get_space_name() << " not found";

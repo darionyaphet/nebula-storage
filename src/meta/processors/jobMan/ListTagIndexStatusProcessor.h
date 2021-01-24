@@ -24,7 +24,7 @@ public:
 
 private:
     explicit ListTagIndexStatusProcessor(kvstore::KVStore* kvstore)
-            : BaseProcessor<cpp2::ListIndexStatusResp>(kvstore) {}
+        : BaseProcessor<cpp2::ListIndexStatusResp>(kvstore) {}
 };
 
 }  // namespace meta

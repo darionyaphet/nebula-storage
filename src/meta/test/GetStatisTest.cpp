@@ -107,8 +107,8 @@ protected:
 
 TEST_F(GetStatisTest, StatisJob) {
     ASSERT_TRUE(TestUtils::createSomeHosts(kv_.get()));
-    TestUtils::assembleSpace(kv_.get(), 1, 1);
     GraphSpaceID spaceId = 1;
+    TestUtils::assembleSpace(kv_.get(), spaceId, 1);
     std::vector<std::string> paras{"test_space"};
     JobDescription statisJob(12, cpp2::AdminCmd::STATS, paras);
     NiceMock<MockAdminClient> adminClient;
@@ -442,7 +442,7 @@ TEST_F(GetStatisTest, MockMultiMachineTest) {
         {HostAddr("2", 2), {{1, {5, 6}}}},
     };
     ASSERT_TRUE(TestUtils::createSomeHosts(kv_.get()));
-    TestUtils::assembleSpace(kv_.get(), 1, 6, 3, 3);
+    TestUtils::assembleSpace(kv_.get(), spaceId, 6, 3, 3);
     for (const auto& entry : leaders) {
         auto now = time::WallClock::fastNowInMilliSec();
         auto ret = ActiveHostsMan::updateHostInfo(

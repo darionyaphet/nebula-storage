@@ -15,8 +15,6 @@ namespace meta {
 static const PartitionID kDefaultPartId = 0;
 static const GraphSpaceID kDefaultSpaceId = 0;
 
-using BalanceID = int64_t;
-
 enum class BalanceTaskStatus : uint8_t {
     START                   = 0x01,
     CHANGE_LEADER           = 0x02,
@@ -38,17 +36,6 @@ enum class BalanceTaskResult : uint8_t {
     INVALID             = 0x04,
 };
 
-enum class BalanceStatus : uint8_t {
-    NOT_START          = 0x01,
-    IN_PROGRESS        = 0x02,
-    SUCCEEDED          = 0x03,
-    /**
-     * TODO(heng): Currently, after the plan failed, we will try to resume it
-     * when running "balance" again. But in many cases, the plan will be failed
-     * forever, it this cases, we should rollback the plan.
-     * */
-    FAILED             = 0x04,
-};
 
 class LockUtils {
 public:
@@ -73,6 +60,7 @@ GENERATE_LOCK(snapshot);
 GENERATE_LOCK(group);
 GENERATE_LOCK(zone);
 GENERATE_LOCK(listener);
+GENERATE_LOCK(leaderBalance);
 
 #undef GENERATE_LOCK
 };

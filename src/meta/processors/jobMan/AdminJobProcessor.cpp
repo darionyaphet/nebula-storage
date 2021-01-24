@@ -34,7 +34,8 @@ void AdminJobProcessor::process(const cpp2::AdminJobReq& req) {
             auto paras = req.get_paras();
             if (cmd == nebula::meta::cpp2::AdminCmd::REBUILD_TAG_INDEX ||
                 cmd == nebula::meta::cpp2::AdminCmd::REBUILD_EDGE_INDEX ||
-                cmd == nebula::meta::cpp2::AdminCmd::STATS) {
+                cmd == nebula::meta::cpp2::AdminCmd::STATS ||
+                cmd == nebula::meta::cpp2::AdminCmd::DATA_BALANCE) {
                 if (paras.empty()) {
                     LOG(ERROR) << "Parameter should be not empty";
                     errorCode = cpp2::ErrorCode::E_INVALID_PARM;

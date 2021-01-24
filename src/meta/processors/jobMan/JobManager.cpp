@@ -77,7 +77,7 @@ void JobManager::scheduleThread() {
         int32_t iJob = 0;
         while (status_ == JbmgrStatus::BUSY || !try_dequeue(iJob)) {
             if (status_ == JbmgrStatus::STOPPED) {
-                LOG(INFO) << "[JobManager] detect shutdown called, exit";
+                LOG(INFO) << "Detect shutdown called, exit";
                 break;
             }
             usleep(FLAGS_job_check_intervals);
@@ -85,11 +85,11 @@ void JobManager::scheduleThread() {
 
         auto jobDesc = JobDescription::loadJobDescription(iJob, kvStore_);
         if (jobDesc == folly::none) {
-            LOG(ERROR) << "[JobManager] load an invalid job from queue " << iJob;
+            LOG(ERROR) << "Load an invalid job from queue " << iJob;
             continue;   // leader change or archive happend
         }
         if (!jobDesc->setStatus(cpp2::JobStatus::RUNNING)) {
-            LOG(INFO) << "[JobManager] skip job " << iJob;
+            LOG(INFO) << "Skip job " << iJob;
             continue;
         }
         save(jobDesc->jobKey(), jobDesc->jobVal());
@@ -132,6 +132,10 @@ bool JobManager::runJobInternal(const JobDescription& jobDesc) {
     if (jobExec->execute() != cpp2::ErrorCode::SUCCEEDED) {
         LOG(ERROR) << "Job dispatch failed";
         return false;
+    }
+
+    if (jobDesc.getCmd() == cpp2::AdminCmd::DATA_BALANCE) {
+        cleanJob(jobDesc.getJobId());
     }
     return true;
 }
@@ -179,9 +183,9 @@ cpp2::ErrorCode JobManager::jobFinished(JobID jobId, cpp2::JobStatus jobStatus) 
         }
     }
     auto rc = save(optJobDesc->jobKey(), optJobDesc->jobVal());
-    if (rc == nebula::kvstore::ResultCode::ERR_LEADER_CHANGED) {
+    if (rc == kvstore::ResultCode::ERR_LEADER_CHANGED) {
         return cpp2::ErrorCode::E_LEADER_CHANGED;
-    } else if (rc != nebula::kvstore::ResultCode::SUCCEEDED) {
+    } else if (rc != kvstore::ResultCode::SUCCEEDED) {
         return cpp2::ErrorCode::E_UNKNOWN;
     }
 
@@ -284,13 +288,13 @@ cpp2::ErrorCode JobManager::reportTaskFinish(const cpp2::ReportTaskReq& req) {
         return rc;
     }
 
-    auto allTaskFinished = std::none_of(tasks.begin(), tasks.end(), [](auto& tsk){
-        return tsk.status_ == cpp2::JobStatus::RUNNING;
+    auto allTaskFinished = std::none_of(tasks.begin(), tasks.end(), [](auto& t){
+        return t.status_ == cpp2::JobStatus::RUNNING;
     });
 
     if (allTaskFinished) {
-        auto jobStatus = std::all_of(tasks.begin(), tasks.end(), [](auto& tsk) {
-            return tsk.status_ == cpp2::JobStatus::FINISHED;
+        auto jobStatus = std::all_of(tasks.begin(), tasks.end(), [](auto& t) {
+            return t.status_ == cpp2::JobStatus::FINISHED;
         }) ? cpp2::JobStatus::FINISHED : cpp2::JobStatus::FAILED;
         return jobFinished(jobId, jobStatus);
     }
@@ -301,7 +305,7 @@ std::list<TaskDescription> JobManager::getAllTasks(JobID jobId) {
     std::list<TaskDescription> taskDescriptions;
     auto jobKey = JobDescription::makeJobKey(jobId);
     std::unique_ptr<kvstore::KVIterator> iter;
-    ResultCode rc = kvStore_->prefix(kDefaultSpaceId, kDefaultPartId, jobKey, &iter);
+    auto rc = kvStore_->prefix(kDefaultSpaceId, kDefaultPartId, jobKey, &iter);
     if (rc != nebula::kvstore::ResultCode::SUCCEEDED) {
         return taskDescriptions;
     }
@@ -334,12 +338,8 @@ size_t JobManager::jobSize() const {
 }
 
 bool JobManager::try_dequeue(JobID& jobId) {
-    if (highPriorityQueue_->try_dequeue(jobId)) {
-        return true;
-    } else if (lowPriorityQueue_->try_dequeue(jobId)) {
-        return true;
-    }
-    return false;
+    return highPriorityQueue_->try_dequeue(jobId) ||
+           lowPriorityQueue_->try_dequeue(jobId);
 }
 
 void JobManager::enqueue(const JobID& jobId, const cpp2::AdminCmd& cmd) {
@@ -399,7 +399,8 @@ JobManager::showJobs() {
 }
 
 bool JobManager::isExpiredJob(const cpp2::JobDesc& jobDesc) {
-    if (jobDesc.status == cpp2::JobStatus::QUEUE || jobDesc.status == cpp2::JobStatus::RUNNING) {
+    if (jobDesc.status == cpp2::JobStatus::QUEUE ||
+        jobDesc.status == cpp2::JobStatus::RUNNING) {
         return false;
     }
     auto jobStart = jobDesc.get_start_time();
@@ -524,7 +525,7 @@ GraphSpaceID JobManager::getSpaceId(const std::string& name) {
     std::string val;
     auto ret = kvStore_->get(kDefaultSpaceId, kDefaultPartId, indexKey, &val);
     if (ret != kvstore::ResultCode::SUCCEEDED) {
-        LOG(ERROR) << "KVStore error: " << ret;;
+        LOG(ERROR) << "Space " << name << " not found";
         return -1;
     }
     return *reinterpret_cast<const GraphSpaceID*>(val.c_str());

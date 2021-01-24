@@ -78,7 +78,7 @@ void CreateSnapshotProcessor::process(const cpp2::CreateSnapshotReq&) {
     // step 4 : checkpoint created done, so release the write blocking.
     auto unbRet = cancelWriteBlocking();
     if (unbRet != cpp2::ErrorCode::SUCCEEDED) {
-        LOG(ERROR) << "Create snapshot failed on meta server" << snapshot;
+        LOG(ERROR) << "Create snapshot failed on meta server " << snapshot;
         handleErrorCode(unbRet);
         onFinished();
         return;
@@ -87,7 +87,7 @@ void CreateSnapshotProcessor::process(const cpp2::CreateSnapshotReq&) {
     // step 5 : create checkpoint for meta server.
     auto meteRet = kvstore_->createCheckpoint(kDefaultSpaceId, snapshot);
     if (meteRet.isLeftType()) {
-        LOG(ERROR) << "Create snapshot failed on meta server" << snapshot;
+        LOG(ERROR) << "Create snapshot failed on meta server " << snapshot;
         handleErrorCode(cpp2::ErrorCode::E_STORE_FAILURE);
         onFinished();
         return;

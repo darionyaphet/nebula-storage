@@ -25,6 +25,7 @@ class JobDescription {
     FRIEND_TEST(JobManagerTest, buildJobDescription);
     FRIEND_TEST(JobManagerTest, addJob);
     FRIEND_TEST(JobManagerTest, StatisJob);
+    FRIEND_TEST(JobManagerTest, BalanceDataJob);
     FRIEND_TEST(JobManagerTest, loadJobDescription);
     FRIEND_TEST(JobManagerTest, showJobs);
     FRIEND_TEST(JobManagerTest, showJob);
@@ -33,6 +34,7 @@ class JobDescription {
     FRIEND_TEST(GetStatisTest, StatisJob);
     FRIEND_TEST(GetStatisTest, MockSingleMachineTest);
     FRIEND_TEST(GetStatisTest, MockMultiMachineTest);
+    FRIEND_TEST(GetBalancePlanTest, BalancePlanJob);
 
     using Status = cpp2::JobStatus;
 
@@ -42,8 +44,8 @@ public:
                    cpp2::AdminCmd cmd,
                    std::vector<std::string> paras,
                    Status status = Status::QUEUE,
-                   int64_t startTime = 0,
-                   int64_t stopTime  = 0);
+                   Timestamp startTime = 0,
+                   Timestamp stopTime  = 0);
 
     /*
      * return the JobDescription if both key & val is valid
@@ -162,8 +164,8 @@ private:
     cpp2::AdminCmd                  cmd_;
     std::vector<std::string>        paras_;
     Status                          status_;
-    int64_t                         startTime_;
-    int64_t                         stopTime_;
+    Timestamp                       startTime_;
+    Timestamp                       stopTime_;
 
     // old job may have different format,
     // will ignore some job if it is too old

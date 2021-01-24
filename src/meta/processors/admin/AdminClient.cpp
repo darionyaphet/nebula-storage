@@ -638,8 +638,8 @@ folly::Future<Status> AdminClient::blockingWrites(GraphSpaceID spaceId,
 
 folly::Future<Status>
 AdminClient::addTask(cpp2::AdminCmd cmd,
-                    int32_t jobId,
-                    int32_t taskId,
+                    JobID jobId,
+                    TaskID taskId,
                     GraphSpaceID spaceId,
                     const std::vector<HostAddr>& targetHost,
                     const std::vector<std::string>& taskSpecficParas,
@@ -677,8 +677,8 @@ AdminClient::addTask(cpp2::AdminCmd cmd,
 
 folly::Future<Status>
 AdminClient::stopTask(const std::vector<HostAddr>& target,
-                      int32_t jobId,
-                      int32_t taskId) {
+                      JobID jobId,
+                      TaskID taskId) {
     auto hosts = target.empty() ? ActiveHostsMan::getActiveAdminHosts(kv_) : target;
     storage::cpp2::StopAdminTaskRequest req;
     req.set_job_id(jobId);

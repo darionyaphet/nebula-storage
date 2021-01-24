@@ -39,7 +39,7 @@ public:
 
     // The skeleton to run the job.
     // You should rewrite the executeInternal to trigger the calling.
-    cpp2::ErrorCode  execute();
+    virtual cpp2::ErrorCode execute();
 
     void interruptExecution(JobID jobId);
 
@@ -64,6 +64,10 @@ protected:
 
     virtual folly::Future<Status>
     executeInternal(HostAddr&& address, std::vector<PartitionID>&& parts) = 0;
+
+    // Save the job's additional data and update it when job finish.
+    kvstore::ResultCode saveAdditionalData(const std::string& key,
+                                           const std::string& val);
 
 protected:
     JobID                       jobId_{INT_MIN};

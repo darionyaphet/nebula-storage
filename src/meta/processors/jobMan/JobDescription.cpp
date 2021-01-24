@@ -8,7 +8,6 @@
 #include <string>
 #include <vector>
 #include <folly/String.h>
-#include <boost/stacktrace.hpp>
 #include "meta/processors/jobMan/JobUtils.h"
 #include "meta/processors/jobMan/JobDescription.h"
 #include "kvstore/KVIterator.h"
@@ -26,8 +25,8 @@ JobDescription::JobDescription(JobID id,
                                cpp2::AdminCmd cmd,
                                std::vector<std::string> paras,
                                Status status,
-                               int64_t startTime,
-                               int64_t stopTime)
+                               Timestamp startTime,
+                               Timestamp stopTime)
                                : id_(id),
                                  cmd_(cmd),
                                  paras_(std::move(paras)),
@@ -98,16 +97,16 @@ std::string JobDescription::jobVal() const {
            .append(reinterpret_cast<const char*>(&para[0]), len);
     }
     str.append(reinterpret_cast<const char*>(&status_), sizeof(Status))
-       .append(reinterpret_cast<const char*>(&startTime_), sizeof(int64_t))
-       .append(reinterpret_cast<const char*>(&stopTime_), sizeof(int64_t));
+       .append(reinterpret_cast<const char*>(&startTime_), sizeof(Timestamp))
+       .append(reinterpret_cast<const char*>(&stopTime_), sizeof(Timestamp));
     return str;
 }
 
 std::tuple<AdminCmd,
            std::vector<std::string>,
            Status,
-           int64_t,
-           int64_t>
+           Timestamp,
+           Timestamp>
 JobDescription::parseVal(const folly::StringPiece& rawVal) {
     return decodeValV1(rawVal);
 }
@@ -117,8 +116,8 @@ JobDescription::parseVal(const folly::StringPiece& rawVal) {
 std::tuple<AdminCmd,
            std::vector<std::string>,
            Status,
-           int64_t,
-           int64_t>
+           Timestamp,
+           Timestamp>
 JobDescription::decodeValV1(const folly::StringPiece& rawVal) {
     size_t offset = sizeof(int32_t);
 
@@ -130,11 +129,10 @@ JobDescription::decodeValV1(const folly::StringPiece& rawVal) {
     auto status = JobUtil::parseFixedVal<Status>(rawVal, offset);
     offset += sizeof(Status);
 
-    auto tStart = JobUtil::parseFixedVal<int64_t>(rawVal, offset);
-    offset += sizeof(int64_t);
+    auto tStart = JobUtil::parseFixedVal<Timestamp>(rawVal, offset);
+    offset += sizeof(Timestamp);
 
-    auto tStop = JobUtil::parseFixedVal<int64_t>(rawVal, offset);
-
+    auto tStop = JobUtil::parseFixedVal<Timestamp>(rawVal, offset);
     return std::make_tuple(cmd, paras, status, tStart, tStop);
 }
 

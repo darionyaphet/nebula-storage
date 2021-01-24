@@ -16,7 +16,6 @@ void GetStatisProcessor::process(const cpp2::GetStatisReq& req) {
     auto statisKey = MetaServiceUtils::statisKey(spaceId);
     std::string val;
     auto ret = kvstore_->get(kDefaultSpaceId, kDefaultPartId, statisKey, &val);
-
     if (ret != kvstore::ResultCode::SUCCEEDED) {
         LOG(ERROR) << "SpaceId " << spaceId << " no statis data, "
                    << "please submit job statis under space.";
@@ -24,6 +23,7 @@ void GetStatisProcessor::process(const cpp2::GetStatisReq& req) {
         onFinished();
         return;
     }
+
     auto statisItem = MetaServiceUtils::parseStatisVal(val);
     auto statisJobStatus = statisItem.get_status();
     if (statisJobStatus != cpp2::JobStatus::FINISHED) {

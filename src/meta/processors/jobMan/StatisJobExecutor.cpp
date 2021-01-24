@@ -17,24 +17,14 @@ bool StatisJobExecutor::check() {
     return paras_.size() == 1;
 }
 
-kvstore::ResultCode
-StatisJobExecutor::save(const std::string& key, const std::string& val) {
-    std::vector<kvstore::KV> data{std::make_pair(key, val)};
-    folly::Baton<true, std::atomic> baton;
-    auto rc = nebula::kvstore::ResultCode::SUCCEEDED;
-    kvstore_->asyncMultiPut(kDefaultSpaceId, kDefaultPartId, std::move(data),
-                            [&] (nebula::kvstore::ResultCode code) {
-                                rc = code;
-                                baton.post();
-                            });
-    baton.wait();
-    return rc;
-}
-
 void StatisJobExecutor::doRemove(const std::string& key) {
     folly::Baton<true, std::atomic> baton;
-    kvstore_->asyncRemove(
-        kDefaultSpaceId, kDefaultPartId, key, [&](nebula::kvstore::ResultCode) { baton.post(); });
+    kvstore_->asyncRemove(kDefaultSpaceId,
+                          kDefaultPartId,
+                          key,
+                          [&](nebula::kvstore::ResultCode) {
+                              baton.post();
+                          });
     baton.wait();
 }
 
@@ -51,7 +41,7 @@ cpp2::ErrorCode StatisJobExecutor::prepare() {
     statisItem.status = cpp2::JobStatus::RUNNING;
     auto statisKey = MetaServiceUtils::statisKey(space_);
     auto statisVal = MetaServiceUtils::statisVal(statisItem);
-    save(statisKey, statisVal);
+    saveAdditionalData(statisKey, statisVal);
     return cpp2::ErrorCode::SUCCEEDED;
 }
 
@@ -118,7 +108,7 @@ cpp2::ErrorCode StatisJobExecutor::saveSpecialTaskStatus(const cpp2::ReportTaskR
     }
     addStatis(statisItem, *req.get_statis());
     auto statisVal = MetaServiceUtils::statisVal(statisItem);
-    save(tempKey, statisVal);
+    saveAdditionalData(tempKey, statisVal);
     return cpp2::ErrorCode::SUCCEEDED;
 }
 
@@ -151,7 +141,7 @@ void StatisJobExecutor::finish(bool exeSuccessed) {
         statisItem.status = cpp2::JobStatus::FAILED;
     }
     auto statisVal = MetaServiceUtils::statisVal(statisItem);
-    save(statisKey, statisVal);
+    saveAdditionalData(statisKey, statisVal);
     doRemove(tempKey);
 }
 

@@ -182,9 +182,6 @@ public:
     folly::Future<cpp2::HBResp>
     future_heartBeat(const cpp2::HBReq& req) override;
 
-    folly::Future<cpp2::BalanceResp>
-    future_balance(const cpp2::BalanceReq& req) override;
-
     folly::Future<cpp2::ExecResp>
     future_leaderBalance(const cpp2::LeaderBalanceReq& req) override;
 
@@ -267,6 +264,9 @@ public:
 
     folly::Future<cpp2::GetStatisResp>
     future_getStatis(const cpp2::GetStatisReq& req) override;
+
+    folly::Future<cpp2::GetBalancePlanResp>
+    future_getBalancePlan(const cpp2::GetBalancePlanReq& req) override;
 
     folly::Future<cpp2::ExecResp>
     future_reportTaskFinish(const cpp2::ReportTaskReq& req) override;

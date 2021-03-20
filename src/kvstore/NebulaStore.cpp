@@ -93,7 +93,7 @@ void NebulaStore::loadPartFromDataPath() {
                         // TODO We might want to have a second thought here.
                         // Removing the data directly feels a little strong
                         LOG(INFO) << "Space " << spaceId
-                                    << " does not exist any more, remove the data!";
+                                  << " does not exist any more, remove the data!";
                         auto dataPath = folly::stringPrintf("%s/%s",
                                                             rootPath.c_str(),
                                                             dir.c_str());
@@ -122,14 +122,14 @@ void NebulaStore::loadPartFromDataPath() {
                 for (auto& partId : enginePtr->allParts()) {
                     if (!options_.partMan_->partExist(storeSvcAddr_, spaceId, partId).ok()) {
                         LOG(INFO) << "Part " << partId
-                                    << " does not exist any more, remove it!";
+                                  << " does not exist any more, remove it!";
                         enginePtr->removePart(partId);
                         continue;
                     } else {
                         auto spacePart = std::make_pair(spaceId, partId);
                         if (spacePartIdSet.find(spacePart) != spacePartIdSet.end()) {
                             LOG(INFO) << "Part " << partId
-                                        << " has been loaded, skip current one, remove it!";
+                                      << " has been loaded, skip current one, remove it!";
                             enginePtr->removePart(partId);
                             } else {
                             spacePartIdSet.emplace(spacePart);

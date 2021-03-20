@@ -177,7 +177,7 @@ public:
 
 private:
     explicit RemovePartProcessor(StorageEnv* env)
-            : BaseProcessor<cpp2::AdminExecResp>(env) {}
+        : BaseProcessor<cpp2::AdminExecResp>(env) {}
 };
 
 class MemberChangeProcessor : public BaseProcessor<cpp2::AdminExecResp> {

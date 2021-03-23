@@ -203,7 +203,7 @@ RaftPart::RaftPart(
            GraphSpaceID spaceId,
            PartitionID partId,
            HostAddr localAddr,
-           const folly::StringPiece walRoot,
+           const folly::StringPiece rootPath,
            std::shared_ptr<folly::IOThreadPoolExecutor> pool,
            std::shared_ptr<thread::GenericThreadPool> workers,
            std::shared_ptr<folly::Executor> executor,
@@ -229,7 +229,7 @@ RaftPart::RaftPart(
     policy.bufferSize = FLAGS_wal_buffer_size;
     policy.numBuffers = FLAGS_wal_buffer_num;
     policy.sync = FLAGS_wal_sync;
-    wal_ = FileBasedWal::getWal(walRoot,
+    wal_ = FileBasedWal::getWal(folly::sformat("%s/wal/%d", rootPath, partId_),
                                 idStr_,
                                 policy,
                                 [this] (LogID logId,

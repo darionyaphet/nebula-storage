@@ -487,7 +487,7 @@ StatusOr<std::vector<HostAddr>> AdminClient::getPeers(GraphSpaceID spaceId, Part
             LOG(WARNING) << "Get peers failed, error " << static_cast<int32_t>(code);
             break;
     }
-    return Status::Error("Get Failed");
+    return Status::Error("Get Peers Failed");
 }
 
 std::vector<HostAddr> AdminClient::getAdminAddrFromPeers(const std::vector<HostAddr> &peers) {
@@ -568,6 +568,33 @@ folly::Future<Status> AdminClient::getLeaderDist(HostLeaderMap* result) {
     });
 
     return future;
+}
+
+folly::Future<Status> AdminClient::getPartDist(GraphSpaceID spaceId,
+                                               const HostAddr& target,
+                                               PartPathMap* result) {
+    CHECK_NOTNULL(kv_);
+    auto prefix = MetaServiceUtils::partPrefix(spaceId);
+    std::unique_ptr<kvstore::KVIterator> iter;
+    auto code = kv_->prefix(kDefaultSpaceId, kDefaultPartId, prefix, &iter);
+    if (code != kvstore::ResultCode::SUCCEEDED) {
+        LOG(ERROR) << "Get parts failed";
+        return Status::Error("Get parts failed");
+    }
+
+    while (iter->valid()) {
+        auto key = iter->key();
+        PartitionID partId;
+        memcpy(&partId, key.data() + prefix.size(), sizeof(PartitionID));
+        std::vector<HostAddr> partHosts = MetaServiceUtils::parsePartVal(iter->val());
+        for (const auto& host : partHosts) {
+            if (host == target) {
+                result->emplace(partId, "");
+            }
+        }
+        iter->next();
+    }
+    return Status::OK();
 }
 
 folly::Future<StatusOr<std::string>> AdminClient::createSnapshot(GraphSpaceID spaceId,

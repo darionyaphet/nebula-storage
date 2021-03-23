@@ -26,7 +26,6 @@ public:
     Part(GraphSpaceID spaceId,
          PartitionID partId,
          HostAddr localAddr,
-         const std::string& walPath,
          KVEngine* engine,
          std::shared_ptr<folly::IOThreadPoolExecutor> pool,
          std::shared_ptr<thread::GenericThreadPool> workers,
@@ -133,6 +132,7 @@ private:
 protected:
     GraphSpaceID spaceId_;
     PartitionID partId_;
+    std::string dataPath_;
     std::string walPath_;
     NewLeaderCallback newLeaderCb_ = nullptr;
 

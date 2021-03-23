@@ -235,7 +235,7 @@ protected:
          GraphSpaceID spaceId,
          PartitionID partId,
          HostAddr localAddr,
-         const folly::StringPiece walRoot,
+         const folly::StringPiece rootPath,
          std::shared_ptr<folly::IOThreadPoolExecutor> pool,
          std::shared_ptr<thread::GenericThreadPool> workers,
          std::shared_ptr<folly::Executor> executor,

@@ -16,6 +16,7 @@ namespace meta {
 
 class BalancePlan {
     friend class BalanceJobExecutor;
+    friend class DiskBalanceJobExecutor;
     FRIEND_TEST(BalanceDataTest, BalanceTaskTest);
     FRIEND_TEST(BalanceDataTest, DispatchTasksTest);
     FRIEND_TEST(BalanceDataTest, BalancePlanTest);

@@ -148,17 +148,14 @@ void NebulaStore::loadPartFromDataPath() {
                     bgWorkers_->addTask([
                             spaceId, partId, enginePtr, &counter, &baton, this] () mutable {
                         auto part = std::make_shared<Part>(spaceId,
-                                                            partId,
-                                                            raftAddr_,
-                                                            folly::stringPrintf("%s/wal/%d",
-                                                                    enginePtr->getDataRoot(),
-                                                                    partId),
-                                                            enginePtr,
-                                                            ioPool_,
-                                                            bgWorkers_,
-                                                            workers_,
-                                                            snapshot_,
-                                                            clientMan_);
+                                                           partId,
+                                                           raftAddr_,
+                                                           enginePtr,
+                                                           ioPool_,
+                                                           bgWorkers_,
+                                                           workers_,
+                                                           snapshot_,
+                                                           clientMan_);
                         auto status = options_.partMan_->partMeta(spaceId, partId);
                         if (!status.ok()) {
                             LOG(WARNING) << status.status().toString();
@@ -366,9 +363,6 @@ std::shared_ptr<Part> NebulaStore::newPart(GraphSpaceID spaceId,
     auto part = std::make_shared<Part>(spaceId,
                                        partId,
                                        raftAddr_,
-                                       folly::stringPrintf("%s/wal/%d",
-                                               engine->getDataRoot(),
-                                               partId),
                                        engine,
                                        ioPool_,
                                        bgWorkers_,

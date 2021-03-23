@@ -62,6 +62,7 @@ nebula_add_library(
     processors/jobMan/CompactJobExecutor.cpp
     processors/jobMan/FlushJobExecutor.cpp
     processors/jobMan/BalanceJobExecutor.cpp
+    processors/jobMan/DiskBalanceJobExecutor.cpp
     processors/jobMan/RebuildJobExecutor.cpp
     processors/jobMan/RebuildTagJobExecutor.cpp
     processors/jobMan/RebuildEdgeJobExecutor.cpp

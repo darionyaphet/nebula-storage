@@ -4,8 +4,9 @@
  * attached with Common Clause Condition 1.0, found in the LICENSES directory.
  */
 
-#include "meta/processors/partsMan/CreateSpaceProcessor.h"
+#include <folly/gen/Base.h>
 #include "meta/ActiveHostsMan.h"
+#include "meta/processors/partsMan/CreateSpaceProcessor.h"
 
 DEFINE_int32(default_parts_num, 100, "The default number of parts when a space is created");
 DEFINE_int32(default_replica_factor, 1, "The default replica factor when a space is created");
@@ -178,13 +179,11 @@ void CreateSpaceProcessor::process(const cpp2::CreateSpaceReq& req) {
             }
 
             auto partHosts = std::move(partHostsRet).value();
-
-            std::stringstream ss;
-            for (const auto& host : partHosts) {
-                ss << host << ", ";
-            }
-
-            VLOG(3) << "Space " << spaceId << " part " << partId << " hosts " << ss.str();
+            auto hs = folly::gen::from(partHosts) |
+                      folly::gen::map([](const auto& e) { return e.toString(); }) |
+                      folly::gen::as<std::vector>();
+            VLOG(3) << "Space " << spaceId << " part " << partId
+                    << " hosts " << folly::join(", ", hs);
             data.emplace_back(MetaServiceUtils::partKey(spaceId, partId),
                               MetaServiceUtils::partVal(partHosts));
         }

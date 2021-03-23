@@ -17,8 +17,8 @@ BalanceJobExecutor::BalanceJobExecutor(JobID jobId,
                                        AdminClient* adminClient,
                                        const std::vector<std::string>& paras)
     : MetaJobExecutor(jobId, kvstore, adminClient, paras) {
-        executor_.reset(new folly::CPUThreadPoolExecutor(1));
-    }
+    executor_.reset(new folly::CPUThreadPoolExecutor(1));
+}
 
 
 bool BalanceJobExecutor::check() {
@@ -377,7 +377,6 @@ bool BalanceJobExecutor::balanceParts(JobID id,
 
     auto maxPartsHost = sortedHosts.back();
     auto minPartsHost = sortedHosts.front();
-
     while (maxPartsHost.second > maxLoad || minPartsHost.second < minLoad) {
         auto& partsFrom = confirmedHostParts[maxPartsHost.first];
         auto& partsTo = confirmedHostParts[minPartsHost.first];

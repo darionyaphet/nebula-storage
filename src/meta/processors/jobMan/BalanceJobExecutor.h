@@ -1,4 +1,4 @@
- /* Copyright (c) 2021 vesoft inc. All rights reserved.
+/* Copyright (c) 2021 vesoft inc. All rights reserved.
  *
  * This source code is licensed under Apache 2.0 License,
  * attached with Common Clause Condition 1.0, found in the LICENSES directory.
@@ -9,7 +9,7 @@
 
 #include "meta/processors/jobMan/BalanceTask.h"
 #include "meta/processors/jobMan/BalancePlan.h"
-#include "meta/processors/jobMan/SimpleConcurrentJobExecutor.h"
+#include "meta/processors/jobMan/MetaJobExecutor.h"
 #include <folly/executors/CPUThreadPoolExecutor.h>
 
 namespace nebula {
@@ -38,11 +38,11 @@ public:
                        AdminClient* adminClient,
                        const std::vector<std::string>& params);
 
-    cpp2::ErrorCode execute() override;
-
     bool check() override;
 
     cpp2::ErrorCode prepare() override;
+
+    cpp2::ErrorCode execute() override;
 
     cpp2::ErrorCode stop() override;
 

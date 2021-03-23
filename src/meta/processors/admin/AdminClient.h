@@ -20,6 +20,9 @@ namespace meta {
 using HostLeaderMap = std::unordered_map<HostAddr,
                                          std::unordered_map<GraphSpaceID,
                                                             std::vector<PartitionID>>>;
+
+using PartPathMap = std::unordered_map<PartitionID, std::string>;
+
 using HandleResultOpt = folly::Optional<std::function<void(storage::cpp2::AdminExecResp&&)>>;
 
 static const HostAddr kRandomPeer("", 0);
@@ -78,6 +81,10 @@ public:
     virtual folly::Future<Status> checkPeers(GraphSpaceID spaceId, PartitionID partId);
 
     virtual folly::Future<Status> getLeaderDist(HostLeaderMap* result);
+
+    virtual folly::Future<Status> getPartDist(GraphSpaceID spaceId,
+                                              const HostAddr& target,
+                                              PartPathMap* result);
 
     virtual folly::Future<StatusOr<std::string>> createSnapshot(GraphSpaceID spaceId,
                                                                 const std::string& name,

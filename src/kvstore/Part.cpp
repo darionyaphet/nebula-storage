@@ -19,7 +19,6 @@ using nebula::raftex::AppendLogResult;
 Part::Part(GraphSpaceID spaceId,
            PartitionID partId,
            HostAddr localAddr,
-           const std::string& walPath,
            KVEngine* engine,
            std::shared_ptr<folly::IOThreadPoolExecutor> ioPool,
            std::shared_ptr<thread::GenericThreadPool> workers,
@@ -30,7 +29,7 @@ Part::Part(GraphSpaceID spaceId,
                    spaceId,
                    partId,
                    localAddr,
-                   walPath,
+                   engine_->getDataRoot(),
                    ioPool,
                    workers,
                    handlers,
@@ -38,8 +37,9 @@ Part::Part(GraphSpaceID spaceId,
                    clientMan)
         , spaceId_(spaceId)
         , partId_(partId)
-        , walPath_(walPath)
         , engine_(engine) {
+    dataPath_ = folly::stringPrintf("%s/data/", engine_->getDataRoot());
+    walPath_ = folly::stringPrintf("%s/wal/%d", engine_->getDataRoot(), partId_);
 }
 
 

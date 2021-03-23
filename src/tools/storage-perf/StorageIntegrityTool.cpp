@@ -221,9 +221,11 @@ private:
         while (count < queryTimes) {
             PLOG_EVERY_N(INFO, 1000) << "We have gone " << count << " steps so far";
             // TODO support getProps
-            std::vector<cpp2::VertexProp> props;
-            cpp2::VertexProp tagProp;
-            tagProp.set_tag(tagId_);
+            std::vector<cpp2::SchemaProp> props;
+            cpp2::SchemaProp tagProp;
+            nebula::cpp2::SchemaID schema;
+            schema.set_tag_id(tagId_);
+            tagProp.set_schema(std::move(schema));
             (*tagProp.props_ref()).emplace_back(propName_);
             DataSet dataset({kVid});
             auto future = client_->getProps(spaceId_, dataset, &props, nullptr, nullptr);

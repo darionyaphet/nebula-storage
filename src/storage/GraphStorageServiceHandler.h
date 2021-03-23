@@ -54,11 +54,8 @@ public:
     folly::Future<cpp2::ExecResponse>
     future_addEdgesAtomic(const cpp2::AddEdgesRequest& req) override;
 
-    folly::Future<cpp2::ScanVertexResponse>
-    future_scanVertex(const cpp2::ScanVertexRequest& req) override;
-
-    folly::Future<cpp2::ScanEdgeResponse>
-    future_scanEdge(const cpp2::ScanEdgeRequest& req) override;
+    folly::Future<cpp2::ScanResponse>
+    future_scan(const cpp2::ScanRequest& req) override;
 
     folly::Future<cpp2::GetUUIDResp>
     future_getUUID(const cpp2::GetUUIDReq& req) override;

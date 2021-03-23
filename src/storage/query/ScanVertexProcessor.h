@@ -7,7 +7,6 @@
 #ifndef STORAGE_QUERY_SCANVERTEXPROCESSOR_H_
 #define STORAGE_QUERY_SCANVERTEXPROCESSOR_H_
 
-#include "common/base/Base.h"
 #include "storage/query/QueryBaseProcessor.h"
 
 namespace nebula {

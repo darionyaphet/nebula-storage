@@ -265,9 +265,9 @@ cpp2::ErrorCode GetNeighborsProcessor::buildEdgeContext(const cpp2::TraverseSpec
     return cpp2::ErrorCode::SUCCEEDED;
 }
 
-void GetNeighborsProcessor::buildTagColName(const std::vector<cpp2::VertexProp>& tagProps) {
+void GetNeighborsProcessor::buildTagColName(const std::vector<cpp2::SchemaProp>& tagProps) {
     for (const auto& tagProp : tagProps) {
-        auto tagId = tagProp.get_tag();
+        auto tagId = tagProp.get_schema().get_tag_id();
         auto tagName = tagContext_.tagNames_[tagId];
         std::string colName = "_tag:" + tagName;
         for (const auto& prop : *tagProp.props_ref()) {
@@ -278,9 +278,9 @@ void GetNeighborsProcessor::buildTagColName(const std::vector<cpp2::VertexProp>&
     }
 }
 
-void GetNeighborsProcessor::buildEdgeColName(const std::vector<cpp2::EdgeProp>& edgeProps) {
+void GetNeighborsProcessor::buildEdgeColName(const std::vector<cpp2::SchemaProp>& edgeProps) {
     for (const auto& edgeProp : edgeProps) {
-        auto edgeType = edgeProp.get_type();
+        auto edgeType = edgeProp.get_schema().get_edge_type();
         auto edgeName = edgeContext_.edgeNames_[edgeType];
         std::string colName = "_edge:";
         colName.append(edgeType > 0 ? "+" : "-")

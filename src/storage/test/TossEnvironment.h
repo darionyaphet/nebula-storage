@@ -255,9 +255,11 @@ struct TossEnvironment {
         nebula::DataSet ds;
         ds.rows.emplace_back(std::move(row));
 
-        std::vector<cpp2::EdgeProp> props;
-        cpp2::EdgeProp oneProp;
-        oneProp.set_type(edge.get_key().get_edge_type());
+        std::vector<cpp2::SchemaProp> props;
+        cpp2::SchemaProp oneProp;
+        nebula::cpp2::SchemaID schema;
+        schema.set_edge_type(edge.get_key().get_edge_type());
+        oneProp.set_schema(std::move(schema));
         props.emplace_back(oneProp);
 
         auto needRetry = false;
@@ -268,8 +270,8 @@ struct TossEnvironment {
             auto frpc = sClient_
                             ->getProps(spaceId_,
                                        ds, /*DataSet*/
-                                       nullptr,       /*vector<cpp2::VertexProp>*/
-                                       &props,        /*vector<cpp2::EdgeProp>*/
+                                       nullptr,
+                                       &props,        /*vector<cpp2::SchemaProp>*/
                                        nullptr        /*expressions*/)
                             .via(executor_.get());
             frpc.wait();
@@ -345,9 +347,9 @@ struct TossEnvironment {
         // para 6
         std::vector<cpp2::StatProp>* statProps = nullptr;
         // para 7
-        std::vector<cpp2::VertexProp>* vertexProps = nullptr;
+        std::vector<cpp2::SchemaProp>* vertexProps = nullptr;
         // para 8
-        const std::vector<cpp2::EdgeProp> edgeProps;
+        const std::vector<cpp2::SchemaProp> edgeProps;
         // para 9
         const std::vector<cpp2::Expr>* expressions = nullptr;
         // para 10

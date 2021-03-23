@@ -56,8 +56,8 @@ protected:
 
     cpp2::ErrorCode buildEdgeContext(const cpp2::GetPropRequest& req);
 
-    void buildTagColName(const std::vector<cpp2::VertexProp>& tagProps);
-    void buildEdgeColName(const std::vector<cpp2::EdgeProp>& edgeProps);
+    void buildColName(const std::vector<cpp2::SchemaProp>& props);
+    // void buildEdgeColName(const std::vector<cpp2::SchemaProp>& edgeProps);
 
 private:
     bool isEdge_ = false;                   // true for edge, false for tag

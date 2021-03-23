@@ -40,14 +40,16 @@ buildVertexRequest(int32_t totalParts,
         (*req.parts_ref())[partId].emplace_back(std::move(row));
     }
 
-    std::vector<cpp2::VertexProp> vertexProps;
+    std::vector<cpp2::SchemaProp> vertexProps;
     if (tags.empty()) {
         req.set_vertex_props(std::move(vertexProps));
     } else {
         for (const auto& tag : tags) {
             TagID tagId = tag.first;
-            cpp2::VertexProp tagProp;
-            tagProp.set_tag(tagId);
+            cpp2::SchemaProp tagProp;
+            nebula::cpp2::SchemaID schema;
+            schema.set_tag_id(tagId);
+            tagProp.set_schema(std::move(schema));
             for (const auto& prop : tag.second) {
                 (*tagProp.props_ref()).emplace_back(std::move(prop));
             }

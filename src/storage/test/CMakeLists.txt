@@ -323,20 +323,20 @@ nebula_add_executable(
         boost_regex
 )
 
-nebula_add_executable(
-    NAME
-        scan_edge_prop_bm
-    SOURCES
-        ScanEdgePropBenchmark.cpp
-    OBJECTS
-        ${storage_test_deps}
-    LIBRARIES
-        ${ROCKSDB_LIBRARIES}
-        ${THRIFT_LIBRARIES}
-        ${PROXYGEN_LIBRARIES}
-        wangle
-        gtest
-)
+# nebula_add_executable(
+#     NAME
+#         scan_edge_prop_bm
+#     SOURCES
+#         ScanEdgePropBenchmark.cpp
+#     OBJECTS
+#         ${storage_test_deps}
+#     LIBRARIES
+#         ${ROCKSDB_LIBRARIES}
+#         ${THRIFT_LIBRARIES}
+#         ${PROXYGEN_LIBRARIES}
+#         wangle
+#         gtest
+# )
 
 nebula_add_test(
     NAME
@@ -505,20 +505,20 @@ nebula_add_test(
         gtest
 )
 
-nebula_add_test(
-    NAME
-        scan_edge_test
-    SOURCES
-        ScanEdgeTest.cpp
-    OBJECTS
-        ${storage_test_deps}
-    LIBRARIES
-        ${ROCKSDB_LIBRARIES}
-        ${THRIFT_LIBRARIES}
-        ${PROXYGEN_LIBRARIES}
-        wangle
-        gtest
-)
+# nebula_add_test(
+#     NAME
+#         scan_edge_test
+#     SOURCES
+#         ScanEdgeTest.cpp
+#     OBJECTS
+#         ${storage_test_deps}
+#     LIBRARIES
+#         ${ROCKSDB_LIBRARIES}
+#         ${THRIFT_LIBRARIES}
+#         ${PROXYGEN_LIBRARIES}
+#         wangle
+#         gtest
+# )
 
 nebula_add_test(
     NAME
@@ -535,20 +535,20 @@ nebula_add_test(
         gtest
 )
 
-nebula_add_test(
-    NAME
-        scan_vertex_test
-    SOURCES
-        ScanVertexTest.cpp
-    OBJECTS
-        ${storage_test_deps}
-    LIBRARIES
-        ${ROCKSDB_LIBRARIES}
-        ${THRIFT_LIBRARIES}
-        ${PROXYGEN_LIBRARIES}
-        wangle
-        gtest
-)
+# nebula_add_test(
+#     NAME
+#         scan_vertex_test
+#     SOURCES
+#         ScanVertexTest.cpp
+#     OBJECTS
+#         ${storage_test_deps}
+#     LIBRARIES
+#         ${ROCKSDB_LIBRARIES}
+#         ${THRIFT_LIBRARIES}
+#         ${PROXYGEN_LIBRARIES}
+#         wangle
+#         gtest
+# )
 
 #nebula_add_executable(
 #    NAME

@@ -39,7 +39,7 @@ void GetTagIndexProcessor::process(const cpp2::GetTagIndexReq& req) {
     }
 
     auto item = MetaServiceUtils::parseIndex(nebula::value(indexItemRet));
-    if (item.get_schema_id().getType() != cpp2::SchemaID::Type::tag_id) {
+    if (item.get_schema_id().getType() != nebula::cpp2::SchemaID::Type::tag_id) {
         LOG(ERROR) << "Get Tag Index Failed: Index Name " << indexName << " is not TagIndex";
         resp_.set_code(cpp2::ErrorCode::E_NOT_FOUND);
         onFinished();

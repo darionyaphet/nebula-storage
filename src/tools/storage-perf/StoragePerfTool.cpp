@@ -188,19 +188,23 @@ private:
         return values;
     }
 
-    std::vector<cpp2::VertexProp> vertexProps() {
-        std::vector<cpp2::VertexProp> vertexProps;
-        cpp2::VertexProp vertexProp;
-        vertexProp.set_tag(tagId_);
+    std::vector<cpp2::SchemaProp> vertexProps() {
+        std::vector<cpp2::SchemaProp> vertexProps;
+        cpp2::SchemaProp vertexProp;
+        nebula::cpp2::SchemaID schema;
+        schema.set_tag_id(tagId_);
+        vertexProp.set_schema(std::move(schema));
         vertexProp.set_props(tagProps_[tagId_]);
         vertexProps.emplace_back(std::move(vertexProp));
         return vertexProps;
     }
 
-    std::vector<cpp2::EdgeProp> edgeProps() {
-        std::vector<cpp2::EdgeProp> edgeProps;
-        cpp2::EdgeProp edgeProp;
-        edgeProp.set_type(edgeType_);
+    std::vector<cpp2::SchemaProp> edgeProps() {
+        std::vector<cpp2::SchemaProp> edgeProps;
+        cpp2::SchemaProp edgeProp;
+        nebula::cpp2::SchemaID schema;
+        schema.set_edge_type(edgeType_);
+        edgeProp.set_schema(std::move(schema));
         edgeProp.set_props(edgeProps_);
         edgeProps.emplace_back(std::move(edgeProp));
         return edgeProps;

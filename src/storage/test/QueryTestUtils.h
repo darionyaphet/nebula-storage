@@ -328,14 +328,17 @@ public:
             (*traverseSpec.edge_types_ref()).emplace_back(edge);
         }
 
-        std::vector<cpp2::VertexProp> vertexProps;
+        std::vector<cpp2::SchemaProp> vertexProps;
         if (tags.empty() && !returnNoneProps) {
             traverseSpec.set_vertex_props(std::move(vertexProps));
         } else if (!returnNoneProps) {
             for (const auto& tag : tags) {
                 TagID tagId = tag.first;
-                cpp2::VertexProp tagProp;
-                tagProp.set_tag(tagId);
+                nebula::cpp2::SchemaID schema;
+                schema.set_tag_id(tagId);
+
+                cpp2::SchemaProp tagProp;
+                tagProp.set_schema(std::move(schema));
                 for (const auto& prop : tag.second) {
                     (*tagProp.props_ref()).emplace_back(std::move(prop));
                 }
@@ -344,14 +347,16 @@ public:
             traverseSpec.set_vertex_props(std::move(vertexProps));
         }
 
-        std::vector<cpp2::EdgeProp> edgeProps;
+        std::vector<cpp2::SchemaProp> edgeProps;
         if (edges.empty() && !returnNoneProps) {
             traverseSpec.set_edge_props(std::move(edgeProps));
         } else if (!returnNoneProps) {
             for (const auto& edge : edges) {
                 EdgeType edgeType = edge.first;
-                cpp2::EdgeProp edgeProp;
-                edgeProp.set_type(edgeType);
+                cpp2::SchemaProp edgeProp;
+                nebula::cpp2::SchemaID schema;
+                schema.set_edge_type(edgeType);
+                edgeProp.set_schema(std::move(schema));
                 for (const auto& prop : edge.second) {
                     (*edgeProp.props_ref()).emplace_back(std::move(prop));
                 }

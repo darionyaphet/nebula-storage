@@ -56,8 +56,8 @@ protected:
     cpp2::ErrorCode buildEdgeContext(const cpp2::TraverseSpec& req);
 
     // build tag/edge col name in response when prop specified
-    void buildTagColName(const std::vector<cpp2::VertexProp>& tagProps);
-    void buildEdgeColName(const std::vector<cpp2::EdgeProp>& edgeProps);
+    void buildTagColName(const std::vector<cpp2::SchemaProp>& tagProps);
+    void buildEdgeColName(const std::vector<cpp2::SchemaProp>& edgeProps);
 
     // add PropContext of stat
     cpp2::ErrorCode handleEdgeStatProps(const std::vector<cpp2::StatProp>& statProps);

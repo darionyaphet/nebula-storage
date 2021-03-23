@@ -280,7 +280,7 @@ public:
         cpp2::IndexItem item;
         item.set_index_id(indexID);
         item.set_index_name(indexName);
-        cpp2::SchemaID schemaID;
+        nebula::cpp2::SchemaID schemaID;
         schemaID.set_tag_id(tagID);
         item.set_schema_id(std::move(schemaID));
         item.set_schema_name(std::move(tagName));
@@ -308,7 +308,7 @@ public:
         cpp2::IndexItem item;
         item.set_index_id(indexID);
         item.set_index_name(indexName);
-        cpp2::SchemaID schemaID;
+        nebula::cpp2::SchemaID schemaID;
         schemaID.set_edge_type(edgeType);
         item.set_schema_id(std::move(schemaID));
         item.set_schema_name(std::move(edgeName));

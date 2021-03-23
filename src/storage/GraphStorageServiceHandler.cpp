@@ -14,8 +14,7 @@
 #include "storage/mutate/UpdateEdgeProcessor.h"
 #include "storage/query/GetNeighborsProcessor.h"
 #include "storage/query/GetPropProcessor.h"
-#include "storage/query/ScanVertexProcessor.h"
-#include "storage/query/ScanEdgeProcessor.h"
+#include "storage/query/ScanProcessor.h"
 #include "storage/index/LookupProcessor.h"
 #include "storage/transaction/TransactionProcessor.h"
 
@@ -56,8 +55,7 @@ GraphStorageServiceHandler::GraphStorageServiceHandler(StorageEnv* env)
     kGetNeighborsCounters.init("get_neighbors");
     kGetPropCounters.init("get_prop");
     kLookupCounters.init("lookup");
-    kScanVertexCounters.init("scan_vertex");
-    kScanEdgeCounters.init("scan_edge");
+    kScanCounters.init("scan");
 }
 
 
@@ -138,20 +136,11 @@ GraphStorageServiceHandler::future_lookupIndex(const cpp2::LookupIndexRequest& r
 }
 
 
-folly::Future<cpp2::ScanVertexResponse>
-GraphStorageServiceHandler::future_scanVertex(const cpp2::ScanVertexRequest& req) {
-    auto* processor = ScanVertexProcessor::instance(env_,
-                                                    &kScanVertexCounters,
-                                                    readerPool_.get());
-    RETURN_FUTURE(processor);
-}
-
-
-folly::Future<cpp2::ScanEdgeResponse>
-GraphStorageServiceHandler::future_scanEdge(const cpp2::ScanEdgeRequest& req) {
-    auto* processor = ScanEdgeProcessor::instance(env_,
-                                                  &kScanEdgeCounters,
-                                                  readerPool_.get());
+folly::Future<cpp2::ScanResponse>
+GraphStorageServiceHandler::future_scan(const cpp2::ScanRequest& req) {
+    auto* processor = ScanProcessor::instance(env_,
+                                              &kScanCounters,
+                                              readerPool_.get());
     RETURN_FUTURE(processor);
 }
 

@@ -13,9 +13,9 @@ namespace storage {
 
 template<typename REQ, typename RESP>
 cpp2::ErrorCode QueryBaseProcessor<REQ, RESP>::handleVertexProps(
-        std::vector<cpp2::VertexProp>& vertexProps) {
+        std::vector<cpp2::SchemaProp>& vertexProps) {
     for (auto& vertexProp : vertexProps) {
-        auto tagId = vertexProp.get_tag();
+        auto tagId = vertexProp.get_schema().get_tag_id();
         auto iter = tagContext_.schemas_.find(tagId);
         if (iter == tagContext_.schemas_.end()) {
             VLOG(1) << "Can't find spaceId " << spaceId_ << " tagId " << tagId;
@@ -63,9 +63,9 @@ cpp2::ErrorCode QueryBaseProcessor<REQ, RESP>::handleVertexProps(
 
 template<typename REQ, typename RESP>
 cpp2::ErrorCode QueryBaseProcessor<REQ, RESP>::handleEdgeProps(
-        std::vector<cpp2::EdgeProp>& edgeProps) {
+        std::vector<cpp2::SchemaProp>& edgeProps) {
     for (auto& edgeProp : edgeProps) {
-        auto edgeType = edgeProp.get_type();
+        auto edgeType = edgeProp.get_schema().get_edge_type();;
         auto iter = edgeContext_.schemas_.find(std::abs(edgeType));
         if (iter == edgeContext_.schemas_.end()) {
             VLOG(1) << "Can't find spaceId " << spaceId_ << " edgeType " << edgeType;
@@ -184,11 +184,13 @@ void QueryBaseProcessor<REQ, RESP>::buildEdgeTTLInfo() {
 }
 
 template<typename REQ, typename RESP>
-std::vector<cpp2::VertexProp> QueryBaseProcessor<REQ, RESP>::buildAllTagProps() {
-    std::vector<cpp2::VertexProp> result;
+std::vector<cpp2::SchemaProp> QueryBaseProcessor<REQ, RESP>::buildAllTagProps() {
+    std::vector<cpp2::SchemaProp> result;
     for (const auto& entry : tagContext_.schemas_) {
-        cpp2::VertexProp tagProp;
-        tagProp.set_tag(entry.first);
+        cpp2::SchemaProp tagProp;
+        nebula::cpp2::SchemaID schemaID;
+        schemaID.set_tag_id(entry.first);
+        tagProp.set_schema(std::move(schemaID));
         const auto& schema = entry.second.back();
         auto count = schema->getNumFields();
         for (size_t i = 0; i < count; i++) {
@@ -198,20 +200,25 @@ std::vector<cpp2::VertexProp> QueryBaseProcessor<REQ, RESP>::buildAllTagProps() 
         result.emplace_back(std::move(tagProp));
     }
     std::sort(result.begin(), result.end(),
-              [&] (const auto& a, const auto& b) { return a.get_tag() < b.get_tag(); });
+              [&] (const auto& a, const auto& b) {
+                  return a.get_schema().get_tag_id() < b.get_schema().get_tag_id();
+              });
     return result;
 }
 
 template<typename REQ, typename RESP>
-std::vector<cpp2::EdgeProp> QueryBaseProcessor<REQ, RESP>::buildAllEdgeProps(
+std::vector<cpp2::SchemaProp> QueryBaseProcessor<REQ, RESP>::buildAllEdgeProps(
         const cpp2::EdgeDirection& direction) {
-    std::vector<cpp2::EdgeProp> result;
+    std::vector<cpp2::SchemaProp> result;
     for (const auto& entry : edgeContext_.schemas_) {
-        cpp2::EdgeProp edgeProp;
-        edgeProp.set_type(entry.first);
+        cpp2::SchemaProp edgeProp;
+        nebula::cpp2::SchemaID schemaID;
         if (direction == cpp2::EdgeDirection::IN_EDGE) {
-            edgeProp.set_type(-edgeProp.get_type());
+            schemaID.set_edge_type(-1 * entry.first);
+        } else {
+            schemaID.set_edge_type(entry.first);
         }
+        edgeProp.set_schema(std::move(schemaID));
         const auto& schema = entry.second.back();
         auto count = schema->getNumFields();
         for (size_t i = 0; i < count; i++) {
@@ -219,14 +226,15 @@ std::vector<cpp2::EdgeProp> QueryBaseProcessor<REQ, RESP>::buildAllEdgeProps(
             (*edgeProp.props_ref()).emplace_back(name);
         }
         if (direction == cpp2::EdgeDirection::BOTH) {
-            cpp2::EdgeProp reverse = edgeProp;
-            reverse.set_type(-edgeProp.get_type());
+            cpp2::SchemaProp reverse = edgeProp;
             result.emplace_back(std::move(reverse));
         }
         result.emplace_back(std::move(edgeProp));
     }
     std::sort(result.begin(), result.end(),
-              [&] (const auto& a, const auto& b) { return a.get_type() < b.get_type(); });
+              [&] (const auto& a, const auto& b) {
+                  return a.get_schema().get_edge_type() < b.get_schema().get_edge_type();
+              });
     return result;
 }
 

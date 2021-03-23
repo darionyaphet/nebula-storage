@@ -27,21 +27,19 @@ cpp2::GetPropRequest buildVertexRequest(
         (*req.parts_ref())[partId].emplace_back(std::move(row));
     }
 
-    std::vector<cpp2::VertexProp> vertexProps;
-    if (tags.empty()) {
-        req.set_vertex_props(std::move(vertexProps));
-    } else {
-        for (const auto& tag : tags) {
-            TagID tagId = tag.first;
-            cpp2::VertexProp tagProp;
-            tagProp.set_tag(tagId);
-            for (const auto& prop : tag.second) {
-                (*tagProp.props_ref()).emplace_back(std::move(prop));
-            }
-            vertexProps.emplace_back(std::move(tagProp));
+    std::vector<cpp2::SchemaProp> vertexProps;
+    for (const auto& tag : tags) {
+        TagID tagId = tag.first;
+        cpp2::SchemaProp tagProp;
+        nebula::cpp2::SchemaID schema;
+        schema.set_tag_id(tagId);
+        tagProp.set_schema(std::move(schema));
+        for (const auto& prop : tag.second) {
+            (*tagProp.props_ref()).emplace_back(std::move(prop));
         }
-        req.set_vertex_props(std::move(vertexProps));
+        vertexProps.emplace_back(std::move(tagProp));
     }
+    req.set_vertex_props(std::move(vertexProps));
     return req;
 }
 
@@ -61,21 +59,19 @@ cpp2::GetPropRequest buildEdgeRequest(
         (*req.parts_ref())[partId].emplace_back(std::move(row));
     }
 
-    std::vector<cpp2::EdgeProp> edgeProps;
-    if (edges.empty()) {
-        req.set_edge_props(std::move(edgeProps));
-    } else {
-        for (const auto& edge : edges) {
-            EdgeType edgeType = edge.first;
-            cpp2::EdgeProp edgeProp;
-            edgeProp.set_type(edgeType);
-            for (const auto& prop : edge.second) {
-                (*edgeProp.props_ref()).emplace_back(std::move(prop));
-            }
-            edgeProps.emplace_back(std::move(edgeProp));
+    std::vector<cpp2::SchemaProp> edgeProps;
+    for (const auto& edge : edges) {
+        EdgeType edgeType = edge.first;
+        cpp2::SchemaProp edgeProp;
+        nebula::cpp2::SchemaID schema;
+        schema.set_edge_type(edgeType);
+        edgeProp.set_schema(std::move(schema));
+        for (const auto& prop : edge.second) {
+            (*edgeProp.props_ref()).emplace_back(std::move(prop));
         }
-        req.set_edge_props(std::move(edgeProps));
+        edgeProps.emplace_back(std::move(edgeProp));
     }
+    req.set_edge_props(std::move(edgeProps));
     return req;
 }
 
@@ -90,7 +86,7 @@ void verifyResult(const std::vector<nebula::Row>& expect,
 }
 
 TEST(GetPropTest, PropertyTest) {
-    fs::TempDir rootPath("/tmp/GetPropTest.XXXXXX");
+    fs::TempDir rootPath("/tmp/PropertyTest.XXXXXX");
     mock::MockCluster cluster;
     cluster.initStorageKV(rootPath.path());
     auto* env = cluster.storageEnv_.get();
@@ -319,7 +315,7 @@ TEST(GetPropTest, PropertyTest) {
 }
 
 TEST(GetPropTest, AllPropertyInOneSchemaTest) {
-    fs::TempDir rootPath("/tmp/GetPropTest.XXXXXX");
+    fs::TempDir rootPath("/tmp/AllPropertyInOneSchemaTest.XXXXXX");
     mock::MockCluster cluster;
     cluster.initStorageKV(rootPath.path());
     auto* env = cluster.storageEnv_.get();
@@ -384,7 +380,7 @@ TEST(GetPropTest, AllPropertyInOneSchemaTest) {
 }
 
 TEST(GetPropTest, AllPropertyInAllSchemaTest) {
-    fs::TempDir rootPath("/tmp/GetPropTest.XXXXXX");
+    fs::TempDir rootPath("/tmp/AllPropertyInAllSchemaTest.XXXXXX");
     mock::MockCluster cluster;
     cluster.initStorageKV(rootPath.path());
     auto* env = cluster.storageEnv_.get();
@@ -570,7 +566,7 @@ TEST(QueryVertexPropsTest, PrefixBloomFilterTest) {
     FLAGS_enable_rocksdb_statistics = true;
     FLAGS_enable_rocksdb_prefix_filtering = true;
 
-    fs::TempDir rootPath("/tmp/GetPropTest.XXXXXX");
+    fs::TempDir rootPath("/tmp/PrefixBloomFilterTest.XXXXXX");
     mock::MockCluster cluster;
     cluster.initStorageKV(rootPath.path());
     auto* env = cluster.storageEnv_.get();

@@ -145,11 +145,7 @@ cpp2::ErrorCode GetPropProcessor::checkRequest(const cpp2::GetPropRequest& req) 
     } else if (req.vertex_props_ref().has_value() && req.edge_props_ref().has_value()) {
         return cpp2::ErrorCode::E_INVALID_OPERATION;
     }
-    if (req.vertex_props_ref().has_value()) {
-        isEdge_ = false;
-    } else {
-        isEdge_ = true;
-    }
+    isEdge_ = req.edge_props_ref().has_value();
     return cpp2::ErrorCode::SUCCEEDED;
 }
 
@@ -180,12 +176,12 @@ cpp2::ErrorCode GetPropProcessor::buildTagContext(const cpp2::GetPropRequest& re
         auto returnProps = buildAllTagProps();
         // generate tag prop context
         ret = handleVertexProps(returnProps);
-        buildTagColName(returnProps);
+        buildColName(returnProps);
     } else {
         // not use const reference because we need to modify it when all property need to return
-        auto returnProps = std::move(*req.vertex_props_ref());
+        auto returnProps = std::move(*req.get_vertex_props());
         ret = handleVertexProps(returnProps);
-        buildTagColName(returnProps);
+        buildColName(returnProps);
     }
 
     if (ret != cpp2::ErrorCode::SUCCEEDED) {
@@ -202,12 +198,12 @@ cpp2::ErrorCode GetPropProcessor::buildEdgeContext(const cpp2::GetPropRequest& r
         auto returnProps = buildAllEdgeProps(cpp2::EdgeDirection::BOTH);
         // generate edge prop context
         ret = handleEdgeProps(returnProps);
-        buildEdgeColName(returnProps);
+        buildColName(returnProps);
     } else {
         // not use const reference because we need to modify it when all property need to return
-        auto returnProps = std::move(*req.edge_props_ref());
+        auto returnProps = std::move(*req.get_edge_props());
         ret = handleEdgeProps(returnProps);
-        buildEdgeColName(returnProps);
+        buildColName(returnProps);
     }
 
     if (ret != cpp2::ErrorCode::SUCCEEDED) {
@@ -217,26 +213,36 @@ cpp2::ErrorCode GetPropProcessor::buildEdgeContext(const cpp2::GetPropRequest& r
     return cpp2::ErrorCode::SUCCEEDED;
 }
 
-void GetPropProcessor::buildTagColName(const std::vector<cpp2::VertexProp>& tagProps) {
-    resultDataSet_.colNames.emplace_back(kVid);
-    for (const auto& tagProp : tagProps) {
-        auto tagId = tagProp.get_tag();
-        auto tagName = tagContext_.tagNames_[tagId];
-        for (const auto& prop : *tagProp.props_ref()) {
-            resultDataSet_.colNames.emplace_back(tagName + "." + prop);
+void GetPropProcessor::buildColName(const std::vector<cpp2::SchemaProp>& props) {
+    if (isEdge_) {
+        for (const auto& prop : props) {
+            auto edgeType = prop.get_schema().get_edge_type();
+            auto edgeName = edgeContext_.edgeNames_[edgeType];
+            for (const auto& p : *prop.props_ref()) {
+                resultDataSet_.colNames.emplace_back(edgeName + "." + p);
+            }
+        }
+    } else {
+        resultDataSet_.colNames.emplace_back(kVid);
+        for (const auto& prop : props) {
+            auto tagId = prop.get_schema().get_tag_id();
+            auto tagName = tagContext_.tagNames_[tagId];
+            for (const auto& p : *prop.props_ref()) {
+                resultDataSet_.colNames.emplace_back(tagName + "." + p);
+            }
         }
     }
 }
 
-void GetPropProcessor::buildEdgeColName(const std::vector<cpp2::EdgeProp>& edgeProps) {
-    for (const auto& edgeProp : edgeProps) {
-        auto edgeType = edgeProp.get_type();
-        auto edgeName = edgeContext_.edgeNames_[edgeType];
-        for (const auto& prop : *edgeProp.props_ref()) {
-            resultDataSet_.colNames.emplace_back(edgeName + "." + prop);
-        }
-    }
-}
+// void GetPropProcessor::buildEdgeColName(const std::vector<cpp2::SchemaProp>& edgeProps) {
+    // for (const auto& edgeProp : edgeProps) {
+    //     auto edgeType = edgeProp.get_schema().get_edge_type();
+    //     auto edgeName = edgeContext_.edgeNames_[edgeType];
+    //     for (const auto& prop : *edgeProp.props_ref()) {
+    //         resultDataSet_.colNames.emplace_back(edgeName + "." + prop);
+    //     }
+    // }
+// }
 
 void GetPropProcessor::onProcessFinished() {
     resp_.set_props(std::move(resultDataSet_));

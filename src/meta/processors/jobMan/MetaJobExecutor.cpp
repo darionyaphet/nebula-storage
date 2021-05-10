@@ -13,6 +13,8 @@
 #include "meta/processors/admin/AdminClient.h"
 #include "meta/processors/jobMan/CompactJobExecutor.h"
 #include "meta/processors/jobMan/FlushJobExecutor.h"
+#include "meta/processors/jobMan/DownloadJobExecutor.h"
+#include "meta/processors/jobMan/IngestJobExecutor.h"
 #include "meta/processors/jobMan/MetaJobExecutor.h"
 #include "meta/processors/jobMan/RebuildTagJobExecutor.h"
 #include "meta/processors/jobMan/RebuildEdgeJobExecutor.h"
@@ -44,6 +46,18 @@ MetaJobExecutorFactory::createMetaJobExecutor(const JobDescription& jd,
                                        store,
                                        client,
                                        jd.getParas()));
+        break;
+    case cpp2::AdminCmd::DOWNLOAD:
+        ret.reset(new DownloadJobExecutor(jd.getJobId(),
+                                          store,
+                                          client,
+                                          jd.getParas()));
+        break;
+    case cpp2::AdminCmd::INGEST:
+        ret.reset(new IngestJobExecutor(jd.getJobId(),
+                                        store,
+                                        client,
+                                        jd.getParas()));
         break;
     case cpp2::AdminCmd::REBUILD_TAG_INDEX:
         ret.reset(new RebuildTagJobExecutor(jd.getJobId(),

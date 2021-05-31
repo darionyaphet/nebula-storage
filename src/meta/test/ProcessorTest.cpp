@@ -633,6 +633,21 @@ TEST(ProcessorTest, SpaceWithGroupTest) {
         auto resp = std::move(f).get();
         ASSERT_EQ(nebula::cpp2::ErrorCode::SUCCEEDED, resp.get_code());
     }
+    // Create Space on group_0, replica factor is greater than zone size
+    {
+        cpp2::SpaceDesc properties;
+        properties.set_space_name("space_on_group_0_4");
+        properties.set_partition_num(9);
+        properties.set_replica_factor(4);
+        properties.set_group_name("group_0");
+        cpp2::CreateSpaceReq req;
+        req.set_properties(std::move(properties));
+        auto* processor = CreateSpaceProcessor::instance(kv.get());
+        auto f = processor->getFuture();
+        processor->process(req);
+        auto resp = std::move(f).get();
+        ASSERT_EQ(nebula::cpp2::ErrorCode::E_INVALID_PARM, resp.get_code());
+    }
     // Drop Group should failed
     {
         cpp2::DropGroupReq req;

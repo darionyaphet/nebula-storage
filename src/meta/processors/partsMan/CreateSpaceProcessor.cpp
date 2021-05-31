@@ -121,7 +121,7 @@ void CreateSpaceProcessor::process(const cpp2::CreateSpaceReq& req) {
             if (retCode == nebula::cpp2::ErrorCode::E_KEY_NOT_FOUND) {
                 retCode = nebula::cpp2::ErrorCode::E_GROUP_NOT_FOUND;
             }
-            LOG(ERROR) << " Get Group Name: " << groupName << " failed.";
+            LOG(ERROR) << "Get Group Name: " << groupName << " failed.";
             handleErrorCode(retCode);
             onFinished();
             return;
